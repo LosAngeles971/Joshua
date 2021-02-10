@@ -1,0 +1,125 @@
+== The water containers
+
+[quote, anonymous]
+____
+There are three containers A, B, C. 
+A can hold a maximum of 3 litres of water, and it is empty. 
+B can hold a maximum of 5 litres of water, and it is empty. 
+C can hold a maximum of 8 litres of water, and it is full. 
+There are no marks on the containers. 
+You need to have at least one of B or C with 4 litres of water, how can you do that?
+____
+
+This problem is really similar to "The farmer, the wolv, the goat and the cabbage", even if this one is more related to math and the state plays a crucial role. For this reason, it it may be better starting to define the state.
+
+[cols="2,2,1", options="header"] 
+.Variables of the state
+|===
+
+|Variable
+|Initial value
+|Meaning
+
+|A
+|0
+|Amount of litres into container A
+
+|B
+|0
+|Amount of litres into container be
+
+|C
+|8
+|Amount of litres into container C
+
+|MaxA
+|3
+|Maximum amount of litres of the container A
+
+|MaxB
+|5
+|Maximum amount of litres of the container B
+
+|MaxC
+|8
+|Maximum amount of litres of the container C
+
+|===
+
+The state may have additional variables, but now it is better to define the events:
+
+* [solution's event] B or C contains 4
+* Empty C in A
+* Empty C in B
+* Empty B in A
+* Empty B in C
+* Empty A in B
+* Empty A in C
+
+Since the state plays a crucial role to solve this problem, the significant part is defining the assignments due to the events occurrence.
+
+Below table shows the complete definition of the event "Empty C in A".
+
+[cols="2,2,1", options="header"] 
+.Definition of the event: "Empty C in A"
+|===
+
+|Condition/assignment
+|Expression
+
+|Condition
+|C > 0
+
+|Assignment
+|DeltaA = MaxA - A
+
+|Assignment
+|SubC = min(C, DeltaA)
+
+|Assignment
+|C = C - SubC
+
+|Assignment
+|A = A + SubC
+
+|===
+
+Note that the assignments are a little bit complex, because two temporary variables (DeltaA and SubC) are necessary to represent the final situation after the occurrence of the event.
+
+Finally the definition of the possible relationships.
+
+[cols="2,2,1", options="header"] 
+.Cause-effect relationships
+|===
+
+|Cause
+|Effect
+|Weight
+
+|Empty C in A
+|B or C contains 4
+|0.5
+
+|Empty C in B
+|B or C contains 4
+|0.5
+
+|Empty A in B
+|B or C contains 4
+|0.5
+
+|Empty A in C
+|B or C contains 4
+|0.5
+
+|Empty B in A
+|B or C contains 4
+|0.5
+
+|Empty B in C
+|B or C contains 4
+|0.5
+
+|===
+
+Solving this requires a trial-and-error approach, as you can notice looking at the relationships, since the type of all of them is possibilistic.

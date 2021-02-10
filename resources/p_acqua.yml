@@ -1,0 +1,27 @@
+---
+  variables:
+    - name: A
+      value: 0
+    - name: B
+      value: 0
+    - name: C
+      value: 8
+    - name: MaxA
+      value: 3
+    - name: MaxB
+      value: 5
+    - name: MaxC
+      value: 8
+    - name: DeltaA
+      value: 0
+    - name: DeltaB
+      value: 0
+    - name: DeltaC
+      value: 0
+    - name: SubA
+      value: 0
+    - name: SubB
+      value: 0
+    - name: SubC
+      value: 0
+  success: "B or C contains 4"

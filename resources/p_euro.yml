@@ -1,0 +1,5 @@
+---
+  variables:
+    - name: Inheritance
+      value: 1024
+  success: "He has less than 1 euro"

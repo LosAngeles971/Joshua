@@ -1,0 +1,45 @@
+---
+  variables:
+    - name: Carlo
+      value: 1
+      defined: true
+    - name: Bruno
+      value: 2
+      defined: true
+    - name: Alberto
+      value: 3
+      defined: true
+    - name: Bruno_is_a_only_child
+      value: 0
+      defined: true
+    - name: Copilot_is_a_only_child
+      value: 1
+      defined: true
+    - name: Engineer
+      value: 0
+      defined: true
+    - name: Pilot
+      value: 0
+      defined: true
+    - name: Copilot
+      value: 0
+      defined: true
+    - name: Copilot_wage
+      value: 1
+      defined: true
+    - name: Engineer_wage
+      range: {2,3}
+      defined: false
+    - name: Pilot_wage
+      range: {2,3}
+      defined: false
+    - name: Carlo_wage
+      range: {2,3}
+      defined: false
+    - name: Bruno_wage
+      range: {1,2}
+      defined: false
+    - name: Alberto_wage
+      range: {1,2}
+      defined: false
+  success: "I know their jobs"

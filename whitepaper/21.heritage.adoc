@@ -1,0 +1,49 @@
+== The heritage
+
+[quote, anonymous]
+____
+A person gets an heritage of 1024€, and it starts spending half of the amount each day. How many days does he take to stay with less than 1 euro?
+____
+
+This simple mathematical problem is interesting because the representing graph is different from that of the problem "The farmer, the wolf, the goat and the cabbage". 
+
+Describing it is pretty fast:
+
+* the solution's event is: "He has less than 1 euro"
+* the others events:
+** One day of spending
+** The inheritance is halved
+
+Three cause-effect relationships are enough.
+
+[cols="2,2,1", options="header"] 
+.Cause-effect relationships
+|===
+
+|Cause
+|Effect
+|Weight
+
+|One day of spending
+|The inheritance is halved
+|1.0
+
+|One day of spending
+|He has less than 1 euro
+|0.5
+
+|The inheritance is halved
+|He has less than 1 euro
+|0.5
+
+|===
+
+Note how this problem:
+
+* there is an always true relationship, indeed when he has one day of spending, then the inheritance is always halved
+* there is one event that is the cause of multiple effects
+
+Finally, for this problem the state contains only one variable:
+
+* Inheritance = 1024
+

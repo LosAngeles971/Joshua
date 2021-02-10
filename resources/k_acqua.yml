@@ -1,0 +1,96 @@
+---
+  events:
+    - id: Empty C in A
+      statements:
+        - C > 0
+      assignments:
+        - DeltaA = MaxA - A
+        - SubC = min(C, DeltaA)
+        - C = C - SubC
+        - A = A + SubC
+
+    - id: Empty C in B
+      statements:
+        - C > 0
+      assignments:
+        - DeltaB = MaxB - B
+        - SubC = min(C, DeltaB)
+        - C = C - SubC
+        - B = B + SubC
+
+    - id: Empty A in B
+      statements:
+        - A > 0
+      assignments:
+        - DeltaB = MaxB - B
+        - SubA = min(A, DeltaB)
+        - A = A - SubA
+        - B = B + SubA
+
+    - id: Empty A in C
+      statements:
+        - A > 0
+      assignments:
+        - DeltaC = MaxC - C
+        - SubA = min(A, DeltaC)
+        - A = A - SubA
+        - C = C + SubA        
+
+    - id: Empty B in A
+      statements:
+        - B > 0
+      assignments:
+        - DeltaA = MaxA - A
+        - SubB = min(B, DeltaA)
+        - B = B - SubB
+        - A = A + SubB
+
+    - id: Empty B in C
+      statements:
+        - B > 0
+      assignments:
+        - DeltaC = MaxC - C
+        - SubB = min(B, DeltaC)
+        - B = B - SubB
+        - C = C + SubC
+
+    - id: B o C contiene 4
+      statements:
+        - B == 4 || C == 4
+
+  links:
+    - type: 0.5
+      cause:
+        - Empty C in A
+      effect:
+        - B or C contains 4
+
+    - type: 0.5
+      cause:
+        - Empty C in B
+      effect:
+        - B or C contains 4
+
+    - type: 0.5
+      cause:
+        - Empty A in B
+      effect:
+        - B or C contains 4
+
+    - type: 0.5
+      cause:
+        - Empty A in C
+      effect:
+        - B or C contains 4       
+
+    - type: 0.5
+      cause:
+        - Empty B in A
+      effect:
+        - B or C contains 4
+    - type: 0.5
+
+      cause:
+        - Empty B in C
+      effect:
+        - B or C contains 4

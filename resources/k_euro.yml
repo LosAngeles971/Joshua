@@ -1,0 +1,30 @@
+---
+  events:
+    - id: One day of spending
+      statements:
+        - Inheritance > 1.0
+    - id: The inheritance is halved
+      assignments:
+        - Inheritance = Inheritance / 2
+    - id: He has less than 1 euro
+      statements:
+        - Inheritance < 1.0
+
+  links:
+    - type: 1.0
+      cause:
+        - One day of spending
+      effect:
+        - The inheritance is halved
+
+    - type: 0.5
+      cause:
+        - One day of spending
+      effect:
+        - He has less than 1 euro
+
+    - type: 0.5
+      cause:
+        - The inheritance is halved
+      effect:
+        - He has less than 1 euro
