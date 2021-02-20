@@ -25,24 +25,25 @@ func TestGenetic(t *testing.T) {
 	init.Add(&ctx.Variable{Name: "B", Defined: false, Range: rb})
 	init.Add(&ctx.Variable{Name: "C", Defined: false, Range: rc})
 	init.Add(&ctx.Variable{Name: "D", Defined: true, Value: 0})
-	rel := knowledge.Relationship{
-		Cause: knowledge.Event{
+	e1 := knowledge.Edge{
+		Cause: &knowledge.Event{
 			ID: "1",
-			Statements: []string{
+			Conditions: []string{
 				"A == 2",
 				"B == 5",
 			},
 		},
-		Effect: knowledge.Event{
+		Effect: &knowledge.Event{
 			ID: "2",
-			Statements: []string{
+			Conditions: []string{
 				"C > 3",
 				"D == 0",
 			},
 		},
 	}
+	p1 := knowledge.Path{Path: []knowledge.Edge{e1}}
 	p := Population{
-		Fitness: runtime.Create(rel),
+		Fitness: &p1,
 		Size: 10,
 		Selective_pressure: 1.8,
 		Selection_ratio: 0.5,
