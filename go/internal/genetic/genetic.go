@@ -4,7 +4,6 @@ import (
 	"fmt"
 	ctx "it/losangeles971/joshua/internal/context"
 	"it/losangeles971/joshua/internal/knowledge"
-	"it/losangeles971/joshua/internal/runtime"
 	"math/rand"
 )
 
@@ -24,7 +23,7 @@ func (p *Person) clone() *Person {
 }
 
 type Population struct  {
-    Fitness             runtime.Path
+    Fitness             *knowledge.Path
     Size                int
     GeneticCode         ctx.State
     Population          []*Person
@@ -55,7 +54,7 @@ func (p *Population) Init() {
 */
 func (p *Population) ranking() error {
     for _, person := range p.Population {
-        state := ctx.Create()
+        state := ctx.CreateEmptyState()
         for k, v := range person.DNA {
             state.Update(k, v)
         }

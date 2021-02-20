@@ -35,6 +35,16 @@ type Path struct {
 	cycle 		int				`yaml:"cycle"`
 }
 
+// Used by genetic library
+func (p *Path) Outcome() string {
+	return p.outcome
+}
+
+// Used by genetic library a Path to not executed
+func (p *Path) Reset() {
+	p.executed = false
+}
+
 func (p *Path) GetWeight() float64 {
 	w := float64(0.0)
 	for _, e := range p.Path {

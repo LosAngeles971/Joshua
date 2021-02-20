@@ -1,31 +1,43 @@
 ---
-  events:
+  knowlegde:
     - id: Carlo is the pilot
-      statements:
+      conditions:
         - Carlo_wage > Pilot_wage
         - Pilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Pilot = Carlo
 
     - id: Bruno is the pilot
-      statements:
+      conditions:
         - Bruno_wage > Copilot_wage
         - Pilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Pilot = Bruno
 
     - id: Alberto is the pilot
-      statements:
+      conditions:
         - Alberto_wage > Copilot_wage
         - Pilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Pilot = Alberto
 
     - id: Carlo is the copilot
-      statements:
+      conditions:
         - Carlo_is_a_only_child == 1
         - Carlo_wage > Pilot_wage
         - Copilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Copilot = Carlo
 
@@ -35,46 +47,61 @@
         - Bruno_wage < Alberto_wage
         - Bruno_wage < Carlo_wage
         - Copilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Copilot = Bruno        
     
     - id: Alberto is the copilot
-      statements:
+      conditions:
         - Alberto_is_a_only_child == 1
         - Alberto_wage < Bruno_wage
         - Alberto_wage < Carlo_wage
         - Copilot == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Copilot = Alberto      
 
     - id: Carlo is the engineer
-      statements:
+      conditions:
         - Engineer == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Engineer = Carlo
 
     - id: Bruno is the engineer
-      statements:
+      conditions:
         - Engineer == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Engineer = Bruno        
     
     - id: Alberto is the engineer
-      statements:
+      conditions:
         - Engineer == 0
+      effects:
+        - weight: 0.3
+          event: "All jobs are defined"
       assignments:
         - Engineer = Alberto
 
     - id: Carlo is a only child
-      statements:
+      conditions:
         - Carlo_is_a_only_child == 1
 
     - id: Bruno is a only child
-      statements:
+      conditions:
         - Bruno_is_a_only_child == 1
 
     - id: Alberto is a only child
-      statements:
+      conditions:
         - Alberto_is_a_only_child == 1
 
     - id: Copilot wage is the least
@@ -82,30 +109,11 @@
     - id: Carlo earns more than the pilot
 
     - id: All jobs are defined
-      statements:
+      conditions:
         - Pilota != 0 && Copilota != 0 && Ingegnere != 0
         - Pilota != Copilota && Pilota != Ingegnere &&  Copilota != Ingegnere
+      effects:
+        - weight: 1.0
+          event: "I know their jobs"
 
     - id: "I know their jobs"
-      
-
-  links:
-    - type: 1.0
-      cause:
-        - All jobs are defined
-      effect:
-        - "I know their jobs"
-
-    - type: 0.3
-      cause:
-        - Carlo is the pilot
-        - Bruno is the pilot
-        - Alberto is the pilot
-        - Carlo is the copilot
-        - Bruno is the copilot
-        - Alberto is the copilot
-        - Carlo is the engineer
-        - Bruno is the engineer
-        - Alberto is the engineer                
-      effect:
-        - "All jobs are defined"

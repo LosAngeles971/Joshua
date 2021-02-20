@@ -1,8 +1,11 @@
 ---
-  events:
+  knowlegde:
     - id: Empty C in A
-      statements:
+      conditions:
         - C > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaA = MaxA - A
         - SubC = min(C, DeltaA)
@@ -10,8 +13,11 @@
         - A = A + SubC
 
     - id: Empty C in B
-      statements:
+      conditions:
         - C > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaB = MaxB - B
         - SubC = min(C, DeltaB)
@@ -19,8 +25,11 @@
         - B = B + SubC
 
     - id: Empty A in B
-      statements:
+      conditions:
         - A > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaB = MaxB - B
         - SubA = min(A, DeltaB)
@@ -28,8 +37,11 @@
         - B = B + SubA
 
     - id: Empty A in C
-      statements:
+      conditions:
         - A > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaC = MaxC - C
         - SubA = min(A, DeltaC)
@@ -37,8 +49,11 @@
         - C = C + SubA        
 
     - id: Empty B in A
-      statements:
+      conditions:
         - B > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaA = MaxA - A
         - SubB = min(B, DeltaA)
@@ -46,8 +61,11 @@
         - A = A + SubB
 
     - id: Empty B in C
-      statements:
+      conditions:
         - B > 0
+      effects:
+        - weight: 0.5
+          event: "B or C contains 4"
       assignments:
         - DeltaC = MaxC - C
         - SubB = min(B, DeltaC)
@@ -55,42 +73,5 @@
         - C = C + SubC
 
     - id: B o C contiene 4
-      statements:
+      conditions:
         - B == 4 || C == 4
-
-  links:
-    - type: 0.5
-      cause:
-        - Empty C in A
-      effect:
-        - B or C contains 4
-
-    - type: 0.5
-      cause:
-        - Empty C in B
-      effect:
-        - B or C contains 4
-
-    - type: 0.5
-      cause:
-        - Empty A in B
-      effect:
-        - B or C contains 4
-
-    - type: 0.5
-      cause:
-        - Empty A in C
-      effect:
-        - B or C contains 4       
-
-    - type: 0.5
-      cause:
-        - Empty B in A
-      effect:
-        - B or C contains 4
-    - type: 0.5
-
-      cause:
-        - Empty B in C
-      effect:
-        - B or C contains 4

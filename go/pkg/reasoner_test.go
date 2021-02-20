@@ -3,19 +3,19 @@ package pkg
 import (
 	"fmt"
 	"testing"
-	"it/losangeles971/joshua/internal/io"
 	"it/losangeles971/joshua/internal/problems"
 	ctx "it/losangeles971/joshua/internal/context"
 	kkk "it/losangeles971/joshua/internal/knowledge"
 )
 
 func TestLogicReasoning(t *testing.T) {
-	k, err := io.Load("../../resources/k_contadino.yml")
+	k := kkk.Knowledge{}
+	err := k.Load("../../resources/k_contadino.yml")
 	if err != nil {
 		fmt.Println("Knowledge not loaded due to error ", err)
 		t.FailNow()
 	}
-	init := ctx.Create()
+	init := ctx.CreateEmptyState()
 	init.Add(&ctx.Variable{Name: "FarmerA", Value: 1.0, Defined: true, })
 	init.Add(&ctx.Variable{Name: "FarmerB", Value: 0.0, Defined: true, })
 	init.Add(&ctx.Variable{Name: "WolfA", Value: 1.0, Defined: true, })
@@ -41,7 +41,8 @@ func TestLogicReasoning(t *testing.T) {
 }
 
 func TestGeneticReasoning(t *testing.T) {
-	k, err := io.Load("../../resources/k_aereo.yml")
+	k := kkk.Knowledge{}
+	err := k.Load("../../resources/k_aereo.yml")
 	if err != nil {
 		fmt.Println("Knowledge not loaded due to error ", err)
 		t.FailNow()

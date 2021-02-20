@@ -4,12 +4,11 @@ import (
 	"fmt"
 	ctx "it/losangeles971/joshua/internal/context"
 	"it/losangeles971/joshua/internal/knowledge"
-	"it/losangeles971/joshua/internal/runtime"
 	"testing"
 )
 
 func TestGenetic(t *testing.T) {
-	init := ctx.Create()
+	init := ctx.CreateEmptyState()
 	ra, err := ctx.ParseRange("{1,2}")
 	if err != nil {
 		t.FailNow()

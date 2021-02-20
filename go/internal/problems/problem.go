@@ -19,7 +19,7 @@ type Problem struct {
 }
 
 func Load(problemFile string) (ctx.State, string, error) {
-	c := ctx.Create()
+	c := ctx.CreateEmptyState()
 	p := Problem{}
 	b, err := ioutil.ReadFile(problemFile)
 	if err != nil {
