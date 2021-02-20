@@ -10,6 +10,7 @@ import (
 
 var knowledgeFile string
 var problemFile string
+var solutionFile string
 var maxCycles int
 var queuelog bool
 
@@ -26,14 +27,11 @@ Usage:
 			fmt.Println("Error loading the problem: ", err)
 			os.Exit(1)
 		}
-		outcome, queue, err := pkg.Verify(k, init, success, maxCycles)
+		outcome, queue, err := pkg.Reason(k, init, &success, maxCycles)
 		if err != nil {
 			fmt.Println("Error solving the problem: ", err)
 			os.Exit(1)
-		}
-		if queuelog {
-			pkg.PrintQueue(queue)
-		}		
+		}	
 		pkg.PrintSummary(outcome, queue)
 	},
 }
@@ -41,10 +39,11 @@ Usage:
 func init() {
 	solveCmd.Flags().StringVarP(&knowledgeFile, "knowledge", "k", "", "YAML file representing the knowledge")
 	solveCmd.Flags().StringVarP(&problemFile, "problem", "p", "", "YAML file describing the problem")
-	solveCmd.Flags().BoolVar(&queuelog, "queuelog", false, "Print queue's content")
+	solveCmd.Flags().StringVarP(&solutionFile, "output", "o", "", "YAML file to host the solution")
 	solveCmd.Flags().IntVarP(&maxCycles, "max-cycles", "m", 100, "Maximum number of cycles (default 100)")
 	solveCmd.MarkFlagRequired("knowledge")
 	solveCmd.MarkFlagRequired("problem")
+	solveCmd.MarkFlagRequired("output")
 	rootCmd.AddCommand(solveCmd)
 }
 

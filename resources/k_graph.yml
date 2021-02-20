@@ -1,0 +1,40 @@
+---
+  # A->E->A->B->C->Z
+  # C->D->Z
+  # F->Z
+  knowlegde:
+    - id: "Z"
+
+    - id: "A"
+      effects:
+        - weight: 1.0
+          event: "B"
+        - weight: 1.0
+          event: "E"
+
+    - id: "B"
+      effects:
+        - weight: 1.0
+          event: "C"
+
+    - id: "C"
+      effects:
+        - weight: 1.0
+          event: "Z"
+        - weight: 1.0
+          event: "D"
+
+    - id: "D"
+      effects:
+        - weight: 1.0
+          event: "Z"
+
+    - id: "E"
+      effects:
+        - weight: 1.0
+          event: "A"
+
+    - id: "F"
+      effects:
+        - weight: 1.0
+          event: "Z"

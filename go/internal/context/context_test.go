@@ -6,8 +6,8 @@ import (
 )
 
 func TestPartOf(t *testing.T) {
-	c1 := Create()
-	c2 := Create()
+	c1 := CreateEmptyState()
+	c2 := CreateEmptyState()
 	c1.Add(&Variable{Name: "a", Value: 1.0, Defined: true, })
 	c1.Add(&Variable{Name: "b", Value: -1.0, Defined: true, })
 	c2.Add(&Variable{Name: "a", Value: 1.0, Defined: true, })
@@ -28,7 +28,7 @@ func TestPartOf(t *testing.T) {
 }
 
 func TestRange(t *testing.T) {
-	c1 := Create()
+	c1 := CreateEmptyState()
 	r, err := ParseRange("{1, 2, 3}")
 	if err != nil {
 		fmt.Println(err)

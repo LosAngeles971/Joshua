@@ -81,56 +81,31 @@
 
     - id: Carlo earns more than the pilot
 
-    - id: "I know their jobs"
+    - id: All jobs are defined
       statements:
         - Pilota != 0 && Copilota != 0 && Ingegnere != 0
         - Pilota != Copilota && Pilota != Ingegnere &&  Copilota != Ingegnere
 
+    - id: "I know their jobs"
+      
+
   links:
     - type: 1.0
       cause:
-        - Carlo is the engineer
+        - All jobs are defined
+      effect:
+        - "I know their jobs"
+
+    - type: 0.3
+      cause:
+        - Carlo is the pilot
         - Bruno is the pilot
-        - Alberto is the copilot
-      effect:
-        - "I know their jobs"
-
-    - type: 1.0
-      cause:
-        - Carlo is the engineer
-        - Alberto is the pilot
-        - Bruno is the copilot
-      effect:
-        - "I know their jobs"
-    
-    - type: 1.0
-      cause:
-        - Bruno is the engineer
-        - Carlo is the pilot
-        - Alberto is the copilot
-      effect:
-        - "I know their jobs"
-
-    - type: 1.0
-      cause:
-        - Alberto is the engineer
-        - Carlo is the pilot
-        - Bruno is the copilot
-      effect:
-        - "I know their jobs"
-
-    - type: 1.0
-      cause:
-        - Bruno is the engineer
         - Alberto is the pilot
         - Carlo is the copilot
+        - Bruno is the copilot
+        - Alberto is the copilot
+        - Carlo is the engineer
+        - Bruno is the engineer
+        - Alberto is the engineer                
       effect:
-        - "I know their jobs"
-
-    - type: 1.0
-      cause:
-        - Alberto is the engineer
-        - Bruno is the pilot
-        - Carlo is the copilot
-      effect:
-        - "I know their jobs"
+        - "All jobs are defined"

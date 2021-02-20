@@ -28,18 +28,18 @@
       value: 1
       defined: true
     - name: Engineer_wage
-      range: {2,3}
+      range: "{2,3}"
       defined: false
     - name: Pilot_wage
-      range: {2,3}
+      range: "{2,3}"
       defined: false
     - name: Carlo_wage
-      range: {2,3}
+      range: "{2,3}"
       defined: false
     - name: Bruno_wage
-      range: {1,2}
+      range: "{1,2}"
       defined: false
     - name: Alberto_wage
-      range: {1,2}
+      range: "{1,2}"
       defined: false
   success: "I know their jobs"

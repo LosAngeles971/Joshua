@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 	"it/losangeles971/joshua/internal/io"
+	"it/losangeles971/joshua/internal/problems"
 	ctx "it/losangeles971/joshua/internal/context"
 	kkk "it/losangeles971/joshua/internal/knowledge"
 )
@@ -29,12 +30,36 @@ func TestLogicReasoning(t *testing.T) {
 		fmt.Println("Knowledge does not contain event: ", e_name)
 		t.FailNow()
 	}
-	outcome, queue, err := Verify(k, init, success, 50)
-	fmt.Println(outcome)
+	outcome, queue, err := Reason(k, init, success, 50)
+	fmt.Println("Outcome: ", outcome)
 	fmt.Println("Cycles: ", queue.GetCycles())
-	fmt.Println(err)
-	queue.SortByCycle()
-	fmt.Println(queue.Print())
+	fmt.Println("Error: ", err)
+	if outcome != kkk.CE_OUTCOME_TRUE {
+		fmt.Println("Outcome is not ", kkk.CE_OUTCOME_TRUE)
+		t.FailNow()
+	}
+}
+
+func TestGeneticReasoning(t *testing.T) {
+	k, err := io.Load("../../resources/k_aereo.yml")
+	if err != nil {
+		fmt.Println("Knowledge not loaded due to error ", err)
+		t.FailNow()
+	}
+	init, e_name, err := problems.Load("../../resources/p_aereo.yml")
+	if err != nil {
+		fmt.Println("Problem not loaded due to error ", err)
+		t.FailNow()
+	}
+	success, ok := k.GetEvent(e_name)
+	if !ok {
+		fmt.Println("Knowledge does not contain event: ", e_name)
+		t.FailNow()
+	}
+	outcome, queue, err := Reason(k, init, success, 50)
+	fmt.Println("Outcome: ", outcome)
+	fmt.Println("Cycles: ", queue.GetCycles())
+	fmt.Println("Error: ", err)
 	if outcome != kkk.CE_OUTCOME_TRUE {
 		fmt.Println("Outcome is not ", kkk.CE_OUTCOME_TRUE)
 		t.FailNow()

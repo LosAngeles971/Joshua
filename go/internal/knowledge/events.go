@@ -29,10 +29,10 @@ From model perspective a Event is the vertex of directed graph, where the edges 
 */
 
 type Event struct {
-	ID			string 		`yaml:"id"`
-	Statements	[]string 	`yaml:"statements"`
-	Assignments	[]string 	`yaml:"assignments"`
-	Dependecies	[]Event
+	ID			string 			`yaml:"id"`
+	Conditions	[]string 		`yaml:"conditions"`
+	Assignments	[]string 		`yaml:"assignments"`
+	Effects		[]*Relationship	`yaml:"effects"`
 }
 
 func parse(a string) (string, *govaluate.EvaluableExpression, error) {
@@ -47,15 +47,16 @@ func parse(a string) (string, *govaluate.EvaluableExpression, error) {
 	return strings.TrimSpace(parts[0]), e, nil
 }
 
-func (f *Event) Verify(data *ctx.State) (string, error) {
-	for _, s := range f.Statements {
+func (f *Event) CanHappen(data *ctx.State) (string, error) {
+	for _, s := range f.Conditions {
 		e, err := govaluate.NewEvaluableExpressionWithFunctions(s, math.Functions)
 		if err != nil {
 			return EVENT_OUTCOME_ERROR, err
 		}
 		// Check if the function requires variables not present into the context
-		for _, v := range e.Vars() {
-			if ok := data.Contains(v); !ok {
+		for _, k := range e.Vars() {
+			vv, ok := data.Get(k)
+			if !ok || !vv.Defined {
 				return EVENT_OUTCOME_UNKNOWN, nil
 			}
 		}
@@ -87,6 +88,18 @@ func (f Event) GetID() string {
 	return f.ID
 }
 
+// This function returns the weight of a specific cause-effect, betweem
+// the cause and the given effect (if the link exists)
+func (e Event) GetWeightTo(effect *Event) float64 {
+	w := float64(0.0)
+	for _, ef := range e.Effects {
+		if ef.Effect.GetID() == effect.GetID() {
+			w += ef.Weight
+		}
+	}
+	return w
+}
+
 func find(a []string, i string) bool {
 	for _, v := range a {
 		if v == i {
@@ -96,7 +109,7 @@ func find(a []string, i string) bool {
 	return false
 }
 
-func (influenced Event) IsInfluencedBy(influencer Event) (bool, error) {
+func (influenced Event) IsInfluencedBy(influencer *Event) (bool, error) {
 	vars := []string{}
 	for _, a := range influencer.Assignments {
 		v, _, err := parse(a)
@@ -108,7 +121,7 @@ func (influenced Event) IsInfluencedBy(influencer Event) (bool, error) {
 	if len(vars) == 0 {
 		return false, nil
 	}
-	for _, s := range influenced.Statements {
+	for _, s := range influenced.Conditions {
 		e, err := govaluate.NewEvaluableExpression(s)
 		if err != nil {
 			return false, err
@@ -123,7 +136,7 @@ func (influenced Event) IsInfluencedBy(influencer Event) (bool, error) {
 }
 
 func (f Event) IsValid() error {
-	for _, s := range f.Statements {
+	for _, s := range f.Conditions {
 		_, err := govaluate.NewEvaluableExpression(s)
 		if err != nil {
 			return err

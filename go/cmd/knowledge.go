@@ -22,13 +22,10 @@ Usage:
 			os.Exit(1)
 		}
 		if len(effectName) > 0 {
-			effect, ok := k.GetEvent(effectName)
+			_, ok := k.GetEvent(effectName)
 			if !ok {
 				fmt.Println("Effect not existent: ", effectName)
 				os.Exit(1)
-			}
-			for _, e := range k.IsEffectOf(effect) {
-				fmt.Println(e.Print())
 			}
 		}
 	},

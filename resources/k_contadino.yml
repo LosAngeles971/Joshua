@@ -1,141 +1,116 @@
 ---
-  events:
-    - id: The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-      statements:
+  knowlegde:
+    - id: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      conditions:
         - FarmerB == 1
         - WolfB == 1
         - GoatB == 1
         - CabbageB == 1
 
     - id: The farmer brings the cabbage on the bank B of the river
-      statements:
+      conditions:
         - FarmerA == 1
         - CabbageA == 1
         - ((WolfA < 1) && (GoatA == 1)) || ((WolfA == 1) && (GoatA < 1))
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerB = 1
         - CabbageB = 1
         - FarmerA = 0
         - CabbageA = 0
 
-    - id: The farmer brings the cabbage on the bank A of the river
-      statements:
+    - id: "The farmer brings the cabbage on the bank A of the river"
+      conditions:
         - FarmerB == 1
         - CabbageB == 1
         - ((WolfB < 1) && (GoatB == 1)) || ((WolfB == 1) && (GoatB < 1))
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerA = 1
         - CabbageA = 1
         - FarmerB = 0
         - CabbageB = 0
     
-    - id: The farmer brings the goat on the bank B of the river
-      statements:
+    - id: "The farmer brings the goat on the bank B of the river"
+      conditions:
         - FarmerA == 1
         - GoatA == 1
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerB = 1
         - GoatB = 1
         - FarmerA = 0
         - GoatA = 0
 
-    - id: The farmer brings the goat on the bank A of the river
-      statements:
+    - id: "The farmer brings the goat on the bank A of the river"
+      conditions:
         - FarmerB == 1
         - GoatB == 1
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerA = 1
         - GoatA = 1
         - FarmerB = 0
         - GoatB = 0
 
-    - id: The farmer brings the wolf on the bank B of the river
-      statements:
+    - id: "The farmer brings the wolf on the bank B of the river"
+      conditions:
         - FarmerA == 1
         - WolfA == 1
         - ((CabbageA < 1) && (GoatA == 1)) || ((CabbageA == 1) && (GoatA < 1))
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerB = 1
         - WolfB = 1
         - FarmerA = 0
         - WolfA = 0
 
-    - id: The farmer brings the wolf on the bank A of the river
-      statements:
+    - id: "The farmer brings the wolf on the bank A of the river"
+      conditions:
         - FarmerB == 1
         - WolfB == 1
         - ((CabbageB < 1) && (GoatB == 1)) || (CabbageB == 1) && (GoatB < 1))
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerA = 1
         - WolfA = 1
         - FarmerB = 0
         - WolfB = 0
 
-    - id: The farmer goes to the bank A of the river
-      statements:
+    - id: "The farmer goes to the bank A of the river"
+      conditions:
         - FarmerB == 1
         - WolfB == 1 || CabbageA == 1 || GoatA == 1
         - CabbageB == 1 || WolfA == 1 || GoatA == 1
         - WolfA == 1 || CabbageA == 1 || GoatA == 1
+      effects:
+        - weight: 0.3
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerA = 1
         - FarmerB = 0
     
-    - id: The farmer goes to the bank B of the river
-      statements:
+    - id: "The farmer goes to the bank B of the river"
+      conditions:
         - FarmerA == 1
         - WolfA == 1 || CabbageB == 1 || GoatB == 1
         - CabbageA == 1 || WolfB == 1 || GoatB == 1
         - WolfB == 1 || CabbageB == 1 || GoatB == 1
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
       assignments:
         - FarmerB = 1
         - FarmerA = 0
-
-  links:
-    - type: 0.5
-      cause:
-        - The farmer brings the cabbage on the bank B of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.5
-      cause:
-        - The farmer brings the goat on the bank B of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.5
-      cause:
-        - The farmer brings the wolf on the bank B of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.1
-      cause:
-        - The farmer brings the cabbage on the bank A of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.1
-      cause:
-        - The farmer brings the goat on the bank A of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.1
-      cause:
-        - The farmer brings the wolf on the bank A of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-
-    - type: 0.3
-      cause:
-        - The farmer goes to the bank A of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river
-        
-    - type: 0.5
-      cause:
-        - The farmer goes to the bank B of the river
-      effect:
-        - The farmer, the wolf, the goat and the cabbage are on the bank B of the river

@@ -1,0 +1,9 @@
+== How Joshua reasons
+
+This chapter tells about how Joshua reasons and works.
+
+include::3.1.joshua.adoc[]
+
+<<<
+include::3.2.joshua.adoc[]
+

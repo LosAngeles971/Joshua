@@ -5,9 +5,6 @@ import (
 )
 
 const (
-	CE_TYPE_TRUE            = 1.0
-	CE_TYPE_TRUE_CONJECTURE = 2.0
-
 	CE_OUTCOME_TRUE         = "true"
 	CE_OUTCOME_CAUSE_FALSE  = "cause not happened"
 	CE_OUTCOME_EFFECT_FALSE = "effect not happened"
@@ -17,37 +14,34 @@ const (
 	CE_OUTCOME_LOOP         = "true but loop"
 )
 
-// Relationship is immutable
 type Relationship struct {
-	Cause   Event
-	Effect  Event
-	Type    float64
+	Indirect  	string		`yaml:"event"`
+	Weight  	float64		`yaml:"weight"`
+	Effect 		*Event
 }
 
-func (l Relationship) Print() string {
-	return l.Cause.GetID() + " -> " + l.Effect.GetID()
-}
-
-func (r Relationship) Weight() float64 {
-	if r.Type > 1.0 {
+func (r Relationship) GetWeight() float64 {
+	if r.Weight > 1.0 {
 		return 1.0
 	}
-	if r.Type < 0.0 {
+	if r.Weight < 0.0 {
 		return 0.0
 	}
-	return r.Type
+	return r.Weight
 }
 
+/*
 func (l Relationship) Equals(r Relationship) bool {
 	if l.Cause.GetID() == r.Cause.GetID() && l.Effect.GetID() == r.Effect.GetID() {
 		return true
 	}
 	return false
 }
+*/
 
-func (r *Relationship) Verify(init ctx.State) (string, ctx.State, error) {
+func (cause *Event) EffectHappen(init ctx.State, effect *Event) (string, ctx.State, error) {
 	data := init.Clone()
-	outcome, err := r.Cause.Verify(&data)
+	outcome, err := cause.CanHappen(&data)
 	if err != nil {
 		return CE_OUTCOME_ERROR, data, err
 	}
@@ -57,7 +51,7 @@ func (r *Relationship) Verify(init ctx.State) (string, ctx.State, error) {
 	if outcome == EVENT_OUTCOME_UNKNOWN {
 		return CE_OUTCOME_UNKNOWN, data, nil
 	}
-	outcome, err = r.Effect.Verify(&data)
+	outcome, err = effect.CanHappen(&data)
 	if err != nil {
 		return CE_OUTCOME_ERROR, data, err
 	}
@@ -70,7 +64,9 @@ func (r *Relationship) Verify(init ctx.State) (string, ctx.State, error) {
 	return CE_OUTCOME_TRUE, data, nil
 }
 
-func (influenced Relationship) IsInfluencedBy(influencer Relationship) (bool, error) {
+
+/*
+func (influenced Relationship) IsInfluencedBy(cause Event, effect Event) (bool, error) {
 	ok, err := influenced.Cause.IsInfluencedBy(influencer.Cause)
 	if err != nil {
 		return ok, err
@@ -101,3 +97,4 @@ func (influenced Relationship) IsInfluencedBy(influencer Relationship) (bool, er
 	}
 	return false, nil
 }
+*/

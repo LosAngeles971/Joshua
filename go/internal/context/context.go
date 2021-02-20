@@ -14,7 +14,14 @@ type Set struct {
 	Values 	[]float64
 }
 
-func (g Set) Get() float64 {
+func (g Set) IsDefined() bool {
+	if len(g.Def) > 0 {
+		return true
+	}
+	return false
+}
+
+func (g Set) GetRandom() float64 {
     return g.Values[rand.Intn(len(g.Values))]
 }
 
@@ -24,7 +31,8 @@ func (g Set) Size() int {
 
 type Range interface {
 	Size() int
-	Get() float64
+	GetRandom() float64
+	IsDefined() bool
 }
 
 func ParseRange(r string) (Range, error) {
@@ -62,11 +70,19 @@ func (v Variable) Clone() *Variable {
 	return &vv
 }
 
+func (v Variable) GetRandom() float64 {
+	if v.Defined {
+		return v.Value
+	} else {
+		return v.Range.GetRandom()
+	}
+}
+
 type State struct {
 	data map[string]*Variable
 }
 
-func Create() State {
+func CreateEmptyState() State {
 	ctx := State{
 		data: map[string]*Variable{},
 	}
@@ -74,11 +90,19 @@ func Create() State {
 }
 
 func (c State) Clone() (State) {
-	clone := Create()
+	clone := CreateEmptyState()
 	for k, v := range c.data {
 		clone.data[k] = v.Clone()
 	}
 	return clone
+}
+
+func (c State) Keys() []string {
+	keys := []string{}
+	for k := range c.data {
+		keys = append(keys, k)
+	}
+	return keys
 }
 
 func (c State) State() map[string]interface{} {

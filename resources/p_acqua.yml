@@ -2,26 +2,38 @@
   variables:
     - name: A
       value: 0
+      defined: true
     - name: B
       value: 0
+      defined: true
     - name: C
       value: 8
+      defined: true
     - name: MaxA
       value: 3
+      defined: true
     - name: MaxB
       value: 5
+      defined: true
     - name: MaxC
       value: 8
+      defined: true
     - name: DeltaA
       value: 0
+      defined: true
     - name: DeltaB
       value: 0
+      defined: true
     - name: DeltaC
       value: 0
+      defined: true
     - name: SubA
       value: 0
+      defined: true
     - name: SubB
       value: 0
+      defined: true
     - name: SubC
       value: 0
+      defined: true
   success: "B or C contains 4"
