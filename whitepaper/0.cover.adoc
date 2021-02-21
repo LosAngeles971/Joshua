@@ -16,7 +16,7 @@ include::1.abstract.adoc[]
 
 include::2.introduction.adoc[]
 
-include::3.0.joshua.adoc[]
+include::3.joshua.adoc[]
 
 include::4.finance.adoc[]
 

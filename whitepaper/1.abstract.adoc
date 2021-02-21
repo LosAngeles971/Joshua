@@ -5,5 +5,10 @@ ____
 I am not afraid of how much a machine can look like a human being, but how much a human being can be assimilated to a complex machine.
 ____
 
-Joshua is a software. 
-It was born from an inspiration coming from reading a book, and its purpose is solving generics problems using a combination of knowledge and state. The knowledge consists of events, and relationships between events. An event is something that can occur under certain circumstances, like a concept (it is always true, for example "Fred is a frog") or an action (it may occur or not, like "the farmer crosses the river"). A relationship ties two events under the principle of cause-effect. Finally, the state is a set of variables which can determine if an event can occur, as well as the occurrence of events can change the state.
+**Joshua* is a software. 
+It was born from an inspiration coming from reading a book footnote:[Massimo Chiriatti - ???], and its purpose is solving generics problems using a combination of **knowledge** and **state**. 
+The knowledge consists of **events** and relationships between events. 
+An event is _something_ that can occur under certain circumstances, for example an event may be "the farmer reaches the est bank of the river", and it can occur if the farmer is on the ovest bank of the river.
+A relationship ties two events under the principle of **cause-effect**, thus the occurrence of an event can cause the occurrence of other events. 
+Finally, the state is a set of **variables** which can determine the conditions that allow an event to happen, as well as the occurrence of every event can change the state.
+How can Joshua solve a problem? Given a base knowledge, a problem can be described as the combination of an initial state and an event, and finding the solution means answering the question: **is there at leat one chain of events that eventually cause my event?**.

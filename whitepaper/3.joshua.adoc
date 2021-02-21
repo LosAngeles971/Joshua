@@ -1,0 +1,437 @@
+<<<
+=== The farmer, the wolf, the goat and the cabbage
+
+[quote, https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem]
+____
+Once upon a time a farmer went to a market and purchased a wolf, a goat, and a cabbage. On his way home, the farmer came to the bank of a river and rented a boat. But crossing the river by boat, the farmer could carry only himself and a single one of his purchases: the wolf, the goat, or the cabbage.
+If left unattended together, the wolf would eat the goat, or the goat would eat the cabbage.
+The farmer's challenge was to carry himself and his purchases to the far bank of the river, leaving each purchase intact. How did he do it?
+____
+
+
+Joshua describes a problem as the combination of an initial **state** and a desired **effect**, and finding the solution means answering the question: is there at least one **chain of concatanted events** that eventually cause the desired effect?**
+
+An event is something that can occur, like a phisycal phenomena or a statement, and it can occur under certain _circumstances_ coming from the current **state**. For example, "The farmer brings the cabbage on the bank B of the river" can occur if both farmer and cabbage are on the bank A of the river. The state is a set of **variables** that determine the **conditions** that allow an event to happen, as well as the occurrence of an event change the current state. Technically speaking, the definition of an event includes:
+
+* a description
+* an _optional_ list of conditions
+* an _optional_ list of assignments
+* an _optional_ list of effects
+
+An effect is an event that assumes a **cause-effect relationship** with another event, and the relationship is characterized by a weight. Indeed, Joshua recognizes three types of cause-effect relationships depending on the weight: 
+
+* a weight of 0 means that if the cause occurs than the effect **never** occurs
+* a weight of 1 means that if the cause occurs than the effect **always** occurs
+* any weight into (0,1) means if the cause occurs than the effect **may** occurs
+
+For example "The farmer brings the cabbage on the bank B of the river" is the cause of the effect "The farmer, the wolf, the goat and the cabbage are on the bank B of the river", but the weight of their relationship is a value into the interval (0,1) like 0.5, since it is not sure that the cause's occurrence triggers the effect.
+
+Nevetheless, an event occurs under specific circumstances determined by the current state, and the latter is a set of variables. Thinking of  Farmer's problem, the state may be defined by 8 variables to determine if a character is on the river's bank A (value 1) or not (value 0), therefore the initial state may be: 
+
+* FarmerA   = 1
+* WolfA     = 1
+* GoatA     = 1
+* CabbageA  = 1
+* FarmerB   = 0
+* WolfB     = 0 
+* GoatB     = 0
+* CabbageB  = 0
+
+Now it is possible to take a look of a complete definition of an event.
+
+[cols="2,4a"] 
+.Cause-effect relationships
+|===
+
+|Event
+|"The farmer brings the cabbage on the bank B of the river"
+
+|Conditions
+|* FarmerA == 1
+* CabbageA == 1
+* ((WolfA < 1) && (GoatA == 1)) || ((WolfA == 1) && (GoatA < 1))
+
+|Effect
+|"The farmer, the wolf, the goat and the cabbage are on the bank B of the river" with weight 0.5
+
+|Assignments
+|*FarmerB = 1
+* CabbageB = 1
+* FarmerA = 0
+* CabbageA = 0
+
+|==
+
+The **assignments** express the consequences of the event's occurrence (not the effect). If the "The farmer brings the cabbage on the bank B of the river" occur, than state must change accordingly.
+
+A set of well known events and cause-effect relationships forms the base knowledge used by Joshua to solve a **problem**. Even if solving problems may increase the knowledge, Joshua is not able (or not deisgned to) to build up the knonledge from scratch, since it requires the ability to observe and understand the occurrence of not known events, in order to classify them and deriving new cause-effect relationships.
+
+In simple workds, **solving a problem** is understanding if an event can happen. Solving the Farmer's problem means understanding what conditions make the event "The farmer, the wolf, the goat and the cabbage are on the bank B of the river" occurs, and such conditions are a chain of events.
+
+[NOTE]
+====
+Joshua defines a solution as a concatenation of events, linked together by the cause-effect principle, in such a way that the first event triggers a succession of events that eventually leads to the occurrence of the desired effect.
+====
+
+Being able to describe a problem is everything, nevertheless it can be tricky, since the description has to be limited to declare the facts (events, relationships and state), without falling into the desire of anticipating the reasoning.
+
+Describing a problems means asking the questions:
+
+. Which event represents the solution?
+. Which others events are possible?
+. Which cause-effect relationships ties the events together?
+
+Here the events related to the Farmer's problem:
+
+* The farmer, the wolf, the goat and the cabbage are on the bank B of the river (solution)
+* The farmer brings the cabbage on the bank B of the river
+* The farmer brings the cabbage on the bank A of the river
+* The farmer brings the goat on the bank B of the river
+* The farmer brings the goat on the bank A of the river
+* The farmer brings the wolf on the bank B of the river
+* The farmer brings the wolf on the bank A of the river
+* The farmer goes to the bank A of the river
+* The farmer goes to the bank B of the river
+
+Of course, every event must be defined entirely, in terms of conditions, effects and assignements.
+
+Here how Joshua defines the base knowledge to solve the Farmer's problem, using a YAML footnote:[Cfr. https://en.wikipedia.org/wiki/YAML] file.
+
+[source, yaml]
+----
+  knowlegde:
+    - id: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      conditions:
+        - FarmerB == 1
+        - WolfB == 1
+        - GoatB == 1
+        - CabbageB == 1
+
+    - id: The farmer brings the cabbage on the bank B of the river
+      conditions:
+        - FarmerA == 1
+        - CabbageA == 1
+        - ((WolfA < 1) && (GoatA == 1)) || ((WolfA == 1) && (GoatA < 1))
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerB = 1
+        - CabbageB = 1
+        - FarmerA = 0
+        - CabbageA = 0
+
+    - id: "The farmer brings the cabbage on the bank A of the river"
+      conditions:
+        - FarmerB == 1
+        - CabbageB == 1
+        - ((WolfB < 1) && (GoatB == 1)) || ((WolfB == 1) && (GoatB < 1))
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerA = 1
+        - CabbageA = 1
+        - FarmerB = 0
+        - CabbageB = 0
+    
+    - id: "The farmer brings the goat on the bank B of the river"
+      conditions:
+        - FarmerA == 1
+        - GoatA == 1
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerB = 1
+        - GoatB = 1
+        - FarmerA = 0
+        - GoatA = 0
+
+    - id: "The farmer brings the goat on the bank A of the river"
+      conditions:
+        - FarmerB == 1
+        - GoatB == 1
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerA = 1
+        - GoatA = 1
+        - FarmerB = 0
+        - GoatB = 0
+
+    - id: "The farmer brings the wolf on the bank B of the river"
+      conditions:
+        - FarmerA == 1
+        - WolfA == 1
+        - ((CabbageA < 1) && (GoatA == 1)) || ((CabbageA == 1) && (GoatA < 1))
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerB = 1
+        - WolfB = 1
+        - FarmerA = 0
+        - WolfA = 0
+
+    - id: "The farmer brings the wolf on the bank A of the river"
+      conditions:
+        - FarmerB == 1
+        - WolfB == 1
+        - ((CabbageB < 1) && (GoatB == 1)) || (CabbageB == 1) && (GoatB < 1))
+      effects:
+        - weight: 0.1
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerA = 1
+        - WolfA = 1
+        - FarmerB = 0
+        - WolfB = 0
+
+    - id: "The farmer goes to the bank A of the river"
+      conditions:
+        - FarmerB == 1
+        - WolfB == 1 || CabbageA == 1 || GoatA == 1
+        - CabbageB == 1 || WolfA == 1 || GoatA == 1
+        - WolfA == 1 || CabbageA == 1 || GoatA == 1
+      effects:
+        - weight: 0.3
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerA = 1
+        - FarmerB = 0
+    
+    - id: "The farmer goes to the bank B of the river"
+      conditions:
+        - FarmerA == 1
+        - WolfA == 1 || CabbageB == 1 || GoatB == 1
+        - CabbageA == 1 || WolfB == 1 || GoatB == 1
+        - WolfB == 1 || CabbageB == 1 || GoatB == 1
+      effects:
+        - weight: 0.5
+          event: "The farmer, the wolf, the goat and the cabbage are on the bank B of the river"
+      assignments:
+        - FarmerB = 1
+        - FarmerA = 0
+----
+
+All conditions of the events only arise from the problem's nature. Hence the event "The farmer brings the cabbage on the bank B of the river" can happen only if:
+
+* Farmer and cabbage are on the bank A of the river (obvious consideration)
+* Wolf and goat are not alone in the same place (wolk would eat the goat)
+
+Likewise, the assignememnts are just the obvius adaptions of the state. 
+
+In the proposed problem's definition (there could be others), all events that are not the solution may cause the solution, and all cause-effect relationships have a weight into the interval (0,1). Such approach can be seen as a **brutal force attack** to the problem, a serach of the solution by attempts, since all events can occur multiple times till to cause the solution's event.
+
+Observing the solution found by Joshua makes evident the applied approach.
+
+[cols="1,4,4,1,1", options="header"] 
+.A solution of the Farmer's problem.
+|===
+
+|Step
+|Event
+|Outcome
+|Is the state changed?
+|Effects
+
+|0
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|1
+|The farmer brings the goat on the bank B of the river
+|It happened
+|True
+|None
+
+
+|2
+|The farmer brings the wolf on the bank B of the river
+|No conditions
+|False
+|None
+
+|3
+|The farmer goes to the bank B of the river
+|No conditions
+|False
+|None
+
+|4
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|5
+|The farmer brings the goat on the bank B of the river
+|No conditions
+|False
+|None
+
+|6
+|The farmer goes to the bank A of the river
+|It happened
+|True
+|None
+
+|7
+|The farmer brings the cabbage on the bank B of the river
+|It happened
+|True
+|None
+
+|8
+|The farmer brings the goat on the bank B of the river
+|No conditions
+|False
+|None
+
+|9
+|The farmer brings the wolf on the bank B of the river
+|No conditions
+|False
+|None
+
+|10
+|The farmer goes to the bank B of the river
+|No conditions
+|False
+|None
+
+|11
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|12
+|The farmer goes to the bank A of the river
+|No conditions
+|False
+|None
+
+|13
+|The farmer brings the cabbage on the bank A of the river
+|The event could have happened, but caused a cycle
+|The event could have changed the state
+|None
+
+|14
+|The farmer brings the goat on the bank A of the river
+|It happened
+|True
+|None
+
+|15
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|16
+|The farmer brings the goat on the bank B of the river
+|The event could have happened, but caused a cycle
+|The event could have changed the state
+|None
+
+|17
+|The farmer brings the wolf on the bank B of the river
+|It happened
+|True
+|None
+
+|18
+|The farmer goes to the bank B of the river
+|No conditions
+|False
+|None
+
+|19
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|20
+|The farmer brings the goat on the bank B of the river
+|No conditions
+|False
+|None
+
+|21
+|The farmer brings the wolf on the bank B of the river
+|No conditions
+|False
+|None
+
+|22
+|The farmer goes to the bank A of the river
+|It happened
+|True
+|None
+
+|23
+|The farmer brings the cabbage on the bank B of the river
+|No conditions
+|False
+|None
+
+|24
+|The farmer brings the goat on the bank B of the river
+|It happened
+|True
+|The farmer, the wolf, the goat and the cabbage are on the bank B of the river
+
+|===
+
+The brutal force attack is recognizable by all failed attempts to make an event happen without having the required conditions.
+
+Steps 13 and 16 highlight how Joshua reasons. Indeed, even if those events could have happend, Joshua discarded them because they would have changed the current state into a configuration already reached in the past. Joshua considered the happening of those events a potential loop.
+
+If you removed all failed attempts from  the above table, you have the cleaned solution of the problem.
+
+[cols="1,4,4", options="header"] 
+."The farmer, the wolf, the goat and the cabbage"
+|===
+
+|Step
+|Cause
+|effect
+
+|1
+|The farmer brings the goat on the bank B of the river
+|The state changed
+
+|6
+|The farmer goes to the bank A of the river
+|The state changed
+
+|7
+|The farmer brings the cabbage on the bank B of the river
+|The state changed
+
+|14
+|The farmer brings the goat on the bank A of the river
+|The state changed
+
+|17
+|The farmer brings the wolf on the bank B of the river
+|The state changed
+
+|22
+|The farmer goes to the bank A of the river
+|The state changed
+
+|24
+|The farmer brings the goat on the bank B of the river
+|The farmer, the wolf, the goat and the cabbage are on the bank B of the river
+
+|===
+
+The proposed approach is interesting, because it highlights the usage of possibilistic cause-effect relationships. Excluding the last step, in all the others the cause-effect relationships partially happened, becase there were the conditions for the cause, but not for the effect. Nevertheless, over the time the partial happening of steps changed the state until the last cause-effect relationship happened completely.
