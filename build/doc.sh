@@ -1,3 +1,4 @@
+echo $CI_PROJECT_DIR
 docker run \
         --rm \
         -v $CI_PROJECT_DIR/whitepaper/:/documents/ \

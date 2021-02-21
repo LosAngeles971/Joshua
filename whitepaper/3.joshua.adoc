@@ -60,7 +60,7 @@ Now it is possible to take a look of a complete definition of an event.
 * FarmerA = 0
 * CabbageA = 0
 
-|==
+|===
 
 The **assignments** express the consequences of the event's occurrence (not the effect). If the "The farmer brings the cabbage on the bank B of the river" occur, than state must change accordingly.
 
@@ -234,7 +234,7 @@ Observing the solution found by Joshua makes evident the applied approach.
 |Step
 |Event
 |Outcome
-|Is the state changed?
+|State changed?
 |Effects
 
 |0
