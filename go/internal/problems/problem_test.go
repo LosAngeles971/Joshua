@@ -28,6 +28,10 @@ func TestLoadProblem(t *testing.T) {
 		fmt.Println("Variable FarmerA should be defined")
 		t.FailNow()
 	}
+	if vv.Value != 1.0 {
+		fmt.Println("Variable FarmerA should be 1.0, not ", vv.Value)
+		t.FailNow()
+	}
 }
 
 func TestLoadProblem2(t *testing.T) {

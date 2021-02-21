@@ -33,7 +33,14 @@ func Load(problemFile string) (ctx.State, string, error) {
 		vv := ctx.Variable{
 			Name: v.Name,
 			Defined: v.Defined,
-		}		
+			Value: v.Value,
+		}
+		if len(v.Range) > 0 {
+			vv.Range, err = ctx.ParseRange(v.Range)
+			if err != nil {
+				return c, "", err
+			}
+		}
 		c.Add(&vv)
 	}
 	return c, p.Success, nil
