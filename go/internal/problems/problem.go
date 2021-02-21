@@ -32,8 +32,8 @@ func Load(problemFile string) (ctx.State, string, error) {
 	for _, v := range p.Variables {
 		vv := ctx.Variable{
 			Name: v.Name,
-		}
-		
+			Defined: v.Defined,
+		}		
 		c.Add(&vv)
 	}
 	return c, p.Success, nil

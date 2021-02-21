@@ -5,8 +5,8 @@ import (
 )
 
 type Edge struct {
-	Cause 	*Event	`yaml:"cause"`
-	Effect 	*Event	`yaml:"effect"`
+	Cause 	*Event	
+	Effect 	*Event
 }
 
 func (e Edge) IsInfluencedBy(ee Edge) (bool, error) {
@@ -27,22 +27,22 @@ func (e Edge) IsInfluencedBy(ee Edge) (bool, error) {
 
 type Path struct {
 	Path 		[]Edge			`yaml:"path"`
-	executed 	bool			`yaml:"executed"`
-	input 		ctx.State		`yaml:"input"`
-	output 		ctx.State		`yaml:"output"`
-	outcome 	string			`yaml:"outcome"`
-	changed 	bool			`yaml:"changed"`
-	cycle 		int				`yaml:"cycle"`
+	Executed 	bool			`yaml:"executed"`
+	Input 		ctx.State		`yaml:"input"`
+	Output 		ctx.State		`yaml:"output"`
+	Outcome 	string			`yaml:"outcome"`
+	Changed 	bool			`yaml:"changed"`
+	Cycle 		int				`yaml:"cycle"`
 }
 
 // Used by genetic library
-func (p *Path) Outcome() string {
-	return p.outcome
+func (p *Path) GetOutcome() string {
+	return p.Outcome
 }
 
 // Used by genetic library a Path to not executed
 func (p *Path) Reset() {
-	p.executed = false
+	p.Executed = false
 }
 
 func (p *Path) GetWeight() float64 {
@@ -94,20 +94,20 @@ func getPath(cause *Event, effect *Event) Path {
 	}
 	return Path{
 		Path: []Edge{e},
-		executed: false,
-		changed: false,
-		outcome: CE_OUTCOME_NULL,
-		cycle: -1,
+		Executed: false,
+		Changed: false,
+		Outcome: CE_OUTCOME_NULL,
+		Cycle: -1,
 	}
 }
 
 func getBranch(o *Path, e Edge) Path {
 	p := Path{
 		Path: append(o.Path, e),
-		executed: false,
-		changed: false,
-		outcome: CE_OUTCOME_NULL,
-		cycle: -1,
+		Executed: false,
+		Changed: false,
+		Outcome: CE_OUTCOME_NULL,
+		Cycle: -1,
 	}
 	return p
 }

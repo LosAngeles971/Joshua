@@ -2,10 +2,12 @@ package knowledge
 
 import (
 	"errors"
-	"strings"
-	"github.com/Knetic/govaluate"
+	"fmt"
 	ctx "it/losangeles971/joshua/internal/context"
 	"it/losangeles971/joshua/internal/math"
+	"strings"
+
+	"github.com/Knetic/govaluate"
 )
 
 const (
@@ -56,7 +58,14 @@ func (f *Event) CanHappen(data *ctx.State) (string, error) {
 		// Check if the function requires variables not present into the context
 		for _, k := range e.Vars() {
 			vv, ok := data.Get(k)
-			if !ok || !vv.Defined {
+			if !ok {
+				fmt.Println("Variable ", k, " is missing from state")
+				fmt.Println(data.Print())
+				return EVENT_OUTCOME_UNKNOWN, nil
+			}
+			if !vv.Defined {
+				fmt.Println("Variable ", k, " is not defined into the state")
+				fmt.Println(data.Print())
 				return EVENT_OUTCOME_UNKNOWN, nil
 			}
 		}

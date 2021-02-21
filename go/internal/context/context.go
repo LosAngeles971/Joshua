@@ -55,10 +55,10 @@ func ParseRange(r string) (Range, error) {
 }
 
 type Variable struct {
-	Name 	string
-	Value 	float64
-	Defined	bool
-	Range	Range
+	Name 	string		`yaml:"variable"`
+	Value 	float64		`yaml:"value"`
+	Defined	bool		`yaml:"defined"`
+	Range	Range		`yaml:"range"`
 }
 
 func (v Variable) Clone() *Variable {
@@ -79,27 +79,27 @@ func (v Variable) GetRandom() float64 {
 }
 
 type State struct {
-	data map[string]*Variable
+	Data map[string]*Variable	`yaml:"state"`
 }
 
 func CreateEmptyState() State {
 	ctx := State{
-		data: map[string]*Variable{},
+		Data: map[string]*Variable{},
 	}
 	return ctx
 }
 
 func (c State) Clone() (State) {
 	clone := CreateEmptyState()
-	for k, v := range c.data {
-		clone.data[k] = v.Clone()
+	for k, v := range c.Data {
+		clone.Data[k] = v.Clone()
 	}
 	return clone
 }
 
 func (c State) Keys() []string {
 	keys := []string{}
-	for k := range c.data {
+	for k := range c.Data {
 		keys = append(keys, k)
 	}
 	return keys
@@ -107,7 +107,7 @@ func (c State) Keys() []string {
 
 func (c State) State() map[string]interface{} {
 	state := map[string]interface{}{}
-	for _, v := range c.data {
+	for _, v := range c.Data {
 		if v.Defined { 
 			state[v.Name] = v.Value
 		}
@@ -116,9 +116,9 @@ func (c State) State() map[string]interface{} {
 }
 
 func (c State) PartOf(s State) bool {
-	for k, v := range c.data {
+	for k, v := range c.Data {
 		if v.Defined {
-			vv, ok := s.data[k]
+			vv, ok := s.Data[k]
 			if !ok {
 				return false
 			}
@@ -133,11 +133,11 @@ func (c State) PartOf(s State) bool {
 }
 
 func (c *State) Add(v *Variable) {
-	c.data[v.Name] = v
+	c.Data[v.Name] = v
 }
 
 func (c *State) Update(k string, v float64) {
-	vv, ok := c.data[k]
+	vv, ok := c.Data[k]
 	if ok {
 		vv.Defined = true
 		vv.Value = v
@@ -152,28 +152,28 @@ func (c *State) Update(k string, v float64) {
 }
 
 func (c *State) Size() int {
-	return len(c.data)
+	return len(c.Data)
 }
 
 func (c State) Contains(k string) bool {
-	_, ok := c.data[k]
+	_, ok := c.Data[k]
 	return ok
 }
 
 func (c State) Get(k string) (*Variable, bool) {
-	v, ok :=  c.data[k]
+	v, ok :=  c.Data[k]
 	return v, ok
 }
 
 func (c State) Print() string {
 	output := ""
-	keys := make([]string, 0, len(c.data))
-	for k := range c.data {
+	keys := make([]string, 0, len(c.Data))
+	for k := range c.Data {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 	for _, k := range keys {
-		output += k + " = " + fmt.Sprint(c.data[k].Value) + "\n"
+		output += k + " = " + fmt.Sprint(c.Data[k].Value) + " defined: " + fmt.Sprint(c.Data[k].Defined) + "\n"
 	}
 	return output
 }

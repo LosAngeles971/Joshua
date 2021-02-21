@@ -63,8 +63,8 @@ func (p *Population) ranking() error {
         if err != nil {
             return err
         }
-        fmt.Println("Outcome: ", p.Fitness.Outcome())
-        switch p.Fitness.Outcome() {
+        fmt.Println("Outcome: ", p.Fitness.GetOutcome())
+        switch p.Fitness.GetOutcome() {
         case knowledge.CE_OUTCOME_TRUE:
             for k := range person.DNA {
                 person.locked[k] = true

@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"it/losangeles971/joshua/internal/io"
+	"it/losangeles971/joshua/internal/knowledge"
+	"it/losangeles971/joshua/internal/problems"
 	"it/losangeles971/joshua/pkg"
 	"os"
 	"github.com/spf13/cobra"
@@ -22,17 +23,35 @@ var solveCmd = &cobra.Command{
 Usage:
 	joshua solve --knowledge|-k <knowledge-file> --problem|-p <problem-file>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		init, k, success, err := io.LoadProblem(knowledgeFile, problemFile)
+		k := knowledge.Knowledge{}
+		err := k.Load(knowledgeFile)
+		if err != nil {
+			fmt.Println("Error loading the knowledge: ", err)
+			os.Exit(1)
+		}
+		init, s_name, err := problems.Load(problemFile)
 		if err != nil {
 			fmt.Println("Error loading the problem: ", err)
 			os.Exit(1)
 		}
-		outcome, queue, err := pkg.Reason(k, init, &success, maxCycles)
+		success, ok := k.GetEvent(s_name)
+		if !ok {
+			fmt.Println("Problem declares an event not included by knowledge: ", s_name)
+			os.Exit(1)
+		}
+		outcome, queue, err := pkg.Reason(k, init, success, maxCycles)
 		if err != nil {
 			fmt.Println("Error solving the problem: ", err)
 			os.Exit(1)
-		}	
+		}
 		pkg.PrintSummary(outcome, queue)
+		if len(solutionFile) > 0 {
+			err = queue.Save(solutionFile)
+			if err != nil {
+				fmt.Println("Error writing the solution file: ", err)
+				os.Exit(1)
+			}
+		}
 	},
 }
 
@@ -43,7 +62,6 @@ func init() {
 	solveCmd.Flags().IntVarP(&maxCycles, "max-cycles", "m", 100, "Maximum number of cycles (default 100)")
 	solveCmd.MarkFlagRequired("knowledge")
 	solveCmd.MarkFlagRequired("problem")
-	solveCmd.MarkFlagRequired("output")
 	rootCmd.AddCommand(solveCmd)
 }
 

@@ -21,6 +21,12 @@ build_arm() {
     GOOS=linux GOARCH=arm64 go build -o $CI_PROJECT_DIR/bin/$JOSHUA_LINUX_ARM_64
 }
 
+if [[ -z $1 ]]
+then
+    echo "Missing target"
+    exit -1
+fi
+
 cd $CI_PROJECT_DIR/go
 if [[ "$1" == "win" || "$1" == "all" ]]
 then

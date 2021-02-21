@@ -31,9 +31,8 @@ func TestLogicReasoning(t *testing.T) {
 		t.FailNow()
 	}
 	outcome, queue, err := Reason(k, init, success, 50)
-	fmt.Println("Outcome: ", outcome)
-	fmt.Println("Cycles: ", queue.GetCycles())
-	fmt.Println("Error: ", err)
+	PrintSummary(outcome, queue)
+	queue.Save("../../resources/s_contadino.yml")
 	if outcome != kkk.CE_OUTCOME_TRUE {
 		fmt.Println("Outcome is not ", kkk.CE_OUTCOME_TRUE)
 		t.FailNow()

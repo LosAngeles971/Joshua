@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"it/losangeles971/joshua/internal/io"
+	"it/losangeles971/joshua/internal/knowledge"
 	"os"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,8 @@ var knowledgeCmd = &cobra.Command{
 Usage:
 	joshua knowledge --knowledge|-k <knowledge-file> --effect <effect>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		k, err := io.Load(knowledgeFile)
+		k := knowledge.Knowledge{}
+		err := k.Load(knowledgeFile)
 		if err != nil {
 			fmt.Println("Error loading the problem: ", err)
 			os.Exit(1)

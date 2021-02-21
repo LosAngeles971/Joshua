@@ -18,5 +18,7 @@ func PrintSummary(outcome string, queue kkk.Queue) {
 }
 
 func Reason(k kkk.Knowledge, init ctx.State, effect *kkk.Event, max_cycles int) (string, kkk.Queue, error) {
+	fmt.Println("Max cycles: ", max_cycles)
+	fmt.Println("State contains: ", init.Size(), " variables")
 	return kkk.Reason(k, init, effect, max_cycles)
 }

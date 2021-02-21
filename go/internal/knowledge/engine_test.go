@@ -57,8 +57,8 @@ func TestCloningPaths(t *testing.T) {
 	init := ctx.CreateEmptyState()
 	q := Queue{[]*Path{&p1}}
 	p1.Run(init, 0)
-	p1.outcome = "Test"
-	if !p1.executed {
+	p1.Outcome = "Test"
+	if !p1.Executed {
 		fmt.Println("P1 should be executed")
 		t.FailNow()
 	}
@@ -67,17 +67,17 @@ func TestCloningPaths(t *testing.T) {
 		fmt.Println("Wrong queue size: ", q.Size())
 		t.FailNow()
 	}
-	p2 := q.paths[1]
-	if p2.executed {
+	p2 := q.Paths[1]
+	if p2.Executed {
 		fmt.Println("P1 should NOT be executed")
 		t.FailNow()
 	}
-	p2.outcome = "Weird"
-	if p1.outcome == p2.outcome {
+	p2.Outcome = "Weird"
+	if p1.Outcome == p2.Outcome {
 		fmt.Println("Entanglement!!!")
 		t.FailNow()
 	}
-	if p2.outcome != "Weird" || p1.outcome != "Test" {
+	if p2.Outcome != "Weird" || p1.Outcome != "Test" {
 		fmt.Println("Data corruption")
 		t.FailNow()
 	}

@@ -35,7 +35,7 @@ func TestRange(t *testing.T) {
 		t.FailNow()
 	}
 	c1.Add(&Variable{Name: "a", Range: r, })
-	if c1.data["a"].Range.Size() != 3 {
+	if c1.Data["a"].Range.Size() != 3 {
 		t.FailNow()
 	}
 }

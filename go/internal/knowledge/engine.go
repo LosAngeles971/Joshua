@@ -2,9 +2,10 @@ package knowledge
 
 import (
 	"errors"
-	"sort"
 	"io/ioutil"
 	ctx "it/losangeles971/joshua/internal/context"
+	"sort"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -27,10 +28,10 @@ func (p *Path) run(input ctx.State, tail int) (error) {
 		if err != nil {
 			return err
 		}
-		p.outcome = outcome
-		p.output = output.Clone()
-		if !p.input.PartOf(p.output) {
-			p.changed = true
+		p.Outcome = outcome
+		p.Output = output.Clone()
+		if !p.Input.PartOf(p.Output) {
+			p.Changed = true
 		}
 	}
 	return nil
@@ -46,20 +47,20 @@ The verification must got for attempts:
 - if not the first - n, first - n -1, ..., the the first
 */
 func (p *Path) Run(input ctx.State, cycle int) (error) {
-	p.cycle = cycle
-	if p.executed {
+	p.Cycle = cycle
+	if p.Executed {
 		return errors.New("Asked to run an already executed state")
 	}
-	p.input = input.Clone()
-	p.executed = true
-	p.changed = false
+	p.Input = input.Clone()
+	p.Executed = true
+	p.Changed = false
 	for i := 0; i < len(p.Path); i++ {
 		err := p.run(input, i)
 		if err != nil {
 			return err
 		}
-		input = p.output.Clone()
-		switch p.outcome {
+		input = p.Output.Clone()
+		switch p.Outcome {
 		case CE_OUTCOME_CAUSE_FALSE:
 			return nil;
 		case CE_OUTCOME_EFFECT_FALSE:
@@ -78,7 +79,7 @@ func (p *Path) Run(input ctx.State, cycle int) (error) {
 }
 
 type Queue struct {
-	paths []*Path	`yaml:"queue"`
+	Paths []*Path	`yaml:"queue"`
 }
 
 /* 
@@ -87,7 +88,7 @@ At the end of the reasoning process, the queue represents the found solution,
 thus this method can be used to save the solution as yaml string.
 */
 func (q Queue) Solution() (string, error) {
-	s, err := yaml.Marshal(q)
+	s, err := yaml.Marshal(&q)
 	if err != nil {
 		return "", err
 	}
@@ -99,8 +100,8 @@ This method serialize a queue of paths into a yaml.
 At the end of the reasoning process, the queue represents the found solution,
 thus this method can be used to save the solution as yaml file.
 */
-func (q Queue) Serialize(filename string) (error) {
-	d, err := yaml.Marshal(q)
+func (q Queue) Save(filename string) (error) {
+	d, err := yaml.Marshal(&q)
 	if err != nil {
 		return err
 	}
@@ -109,37 +110,24 @@ func (q Queue) Serialize(filename string) (error) {
 }
 
 func (q Queue) Size() (int) {
-	return len(q.paths)
+	return len(q.Paths)
 }
-
-/*
-func (q Queue) FindByRelationship(rel kkk.Relationship) (*Path) {
-	for _, p := range q.paths {
-		for i := range p.rel {
-			if p.rel[i].Equals(rel) {
-				return p
-			}
-		}
-	}
-	return nil
-}
-*/
 
 func (q *Queue) addClone(s *Path) (*Path) {
 	n := Path{
 		Path: s.Path,
-		executed: false,
-		outcome: CE_OUTCOME_NULL,
-		changed: false,
-		cycle: -1,
+		Executed: false,
+		Outcome: CE_OUTCOME_NULL,
+		Changed: false,
+		Cycle: -1,
 	}
-	for _, ss := range q.paths {
-		if !ss.executed && ss.Equals(&n) {
+	for _, ss := range q.Paths {
+		if !ss.Executed && ss.Equals(&n) {
 			// such type of path is already in queue ready to be executed
 			return nil
 		}
 	}
-	q.paths = append(q.paths, &n)
+	q.Paths = append(q.Paths, &n)
 	return &n
 }
 
@@ -151,8 +139,8 @@ the given path can be considered a potential loop and it can be
 discarderd even if it changed the state.
 */
 func (q Queue) CheckContext(e *Path) bool {
-	for _, s := range q.paths {
-		if s.executed && !s.Equals(e) && e.output.PartOf(s.output) {
+	for _, s := range q.Paths {
+		if s.Executed && !s.Equals(e) && e.Output.PartOf(s.Output) {
 			return true
 		}
 	}
@@ -160,17 +148,17 @@ func (q Queue) CheckContext(e *Path) bool {
 }
 
 func (q *Queue) SortByCycle() {
-	sort.Slice(q.paths, func(i, j int) bool {
-		return q.paths[i].cycle < q.paths[j].cycle
+	sort.Slice(q.Paths, func(i, j int) bool {
+		return q.Paths[i].Cycle < q.Paths[j].Cycle
 	  })
 }
 
 // This function returns the number of cycles executed by the engine
 func (q *Queue) GetCycles() int {
 	cycles := -1
-	for _, s := range q.paths {
-		if s.cycle > cycles {
-			cycles = s.cycle
+	for _, s := range q.Paths {
+		if s.Cycle > cycles {
+			cycles = s.Cycle
 		}
 	}
 	return cycles
@@ -178,17 +166,17 @@ func (q *Queue) GetCycles() int {
 
 // This function choose the Path to check for solving the problem
 func (q Queue) Choose() (*Path) {
-	if len(q.paths) < 1 {
+	if len(q.Paths) < 1 {
 		return nil
 	}
 	x := -1
-	for i, p := range q.paths {
+	for i, p := range q.Paths {
 		if x == -1 {
-			if !p.executed {
+			if !p.Executed {
 				x = i
 			}
 		} else {
-			if !p.executed && p.GetWeight() > q.paths[x].GetWeight() {
+			if !p.Executed && p.GetWeight() > q.Paths[x].GetWeight() {
 				x = i
 			}
 		}
@@ -196,13 +184,13 @@ func (q Queue) Choose() (*Path) {
 	if x == -1 {
 		return nil
 	}
-	return q.paths[x]
+	return q.Paths[x]
 }
 
 // This function creates a Queue to solve a problem
 func createQueue(data ctx.State, k Knowledge, effect *Event) Queue {
 	q := Queue{
-		paths: GetAllPaths(k, effect),
+		Paths: GetAllPaths(k, effect),
 	}
 	return q
 }
@@ -225,28 +213,28 @@ func Reason(k Knowledge, init ctx.State, effect *Event, max_cycles int) (string,
 		if err != nil {
 			return CE_OUTCOME_ERROR, queue, err
 		}
-		switch path.outcome {
+		switch path.Outcome {
 		case CE_OUTCOME_LOOP:
-			return CE_OUTCOME_ERROR, queue, errors.New("Executed state in loop condition")
+			return CE_OUTCOME_ERROR, queue, errors.New("Executed path got a loop condition")
 		case CE_OUTCOME_ERROR:
-			return CE_OUTCOME_ERROR, queue, errors.New("Executed state in error condition")
+			return CE_OUTCOME_ERROR, queue, errors.New("Executed path got an error")
 		case CE_OUTCOME_UNKNOWN:
-			return CE_OUTCOME_ERROR, queue, errors.New("Executed state in unknown condition")
+			return CE_OUTCOME_ERROR, queue, errors.New("Executed path got an unknown condition")
 		case CE_OUTCOME_NULL:
-			return CE_OUTCOME_ERROR, queue, errors.New("Executed state in nil condition")
+			return CE_OUTCOME_ERROR, queue, errors.New("Executed path got no result")
 		case CE_OUTCOME_TRUE:
 			return CE_OUTCOME_TRUE, queue, nil // the effect happened
 		case CE_OUTCOME_EFFECT_FALSE:
 			// if thes state dit not change the context it does not make sense to have it again into the queue,
 			// because it will never reach the desired effect neither it will change the context.
-			if path.changed {
+			if path.Changed {
 				var pp Path = *path
 				if !queue.CheckContext(path) {
 					// Since the state changed the context by its cause, previous already executed states which are influenced by the 
 					// execution of this state must be cloned into the queue. This action makes sense only if the current state did not reached
 					// a context already reached by another state into the past.
-					for _, ppp := range queue.paths {
-						if ppp.executed {
+					for _, ppp := range queue.Paths {
+						if ppp.Executed {
 							ok, err := ppp.isInfluencedBy(pp)
 							if err != nil {
 								return CE_OUTCOME_ERROR, queue, err
@@ -259,13 +247,13 @@ func Reason(k Knowledge, init ctx.State, effect *Event, max_cycles int) (string,
 					// Since the state changed the context by its cause, it does make sense to have an active
 					// clone of it into the queue, and update the currenct globate context.
 					// OPEN PROBLEM: should this action be execute outside of the if condition?
-					current = path.output.Clone()
+					current = path.Output.Clone()
 					queue.addClone(path)
 				} else {
 					// the state reached an already reached context into the past
 					// to avoid loopback, the state is not cloned into the queue
 					// and it is marked as loop
-					path.outcome = CE_OUTCOME_LOOP
+					path.Outcome = CE_OUTCOME_LOOP
 				}
 			}
 		}

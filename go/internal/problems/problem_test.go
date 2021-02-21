@@ -19,6 +19,15 @@ func TestLoadProblem(t *testing.T) {
 		fmt.Println("Success not parsed")
 		t.FailNow()
 	}
+	vv, ok := init.Get("FarmerA")
+	if !ok {
+		fmt.Println("Missing variable")
+		t.FailNow()
+	}
+	if !vv.Defined {
+		fmt.Println("Variable FarmerA should be defined")
+		t.FailNow()
+	}
 }
 
 func TestLoadProblem2(t *testing.T) {
