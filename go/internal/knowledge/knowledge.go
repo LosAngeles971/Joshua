@@ -21,7 +21,11 @@ func (k *Knowledge) Load(kfile string) error {
 	if err != nil {
 		return err
 	}
+	uid := 0
 	for _, e := range k.Events {
+		e.UID = uid
+		uid++
+		// loading the complete event from effects indirect names
 		for _, r := range e.Effects {
 			ef, ok := k.GetEvent(r.Indirect)
 			if !ok {
@@ -42,18 +46,6 @@ func (u Knowledge) GetEvent(id string) (*Event, bool) {
 	}
 	return nil, false
 }
-
-// This function search for a Event
-/*
-func (u Knowledge) GetRelationship(cause Event, effect Event) (Relationship, bool) {
-	for _, r := range u.Relationships {
-		if r.Cause.GetID() == cause.GetID() && r.Effect.GetID() == effect.GetID() {
-			return r, true
-		}
-	}
-	return Relationship{}, false
-}
-*/
 
 // This function returns all events that cause the given effect
 func (u Knowledge) IsEffectOf(effect *Event) ([]*Event) {

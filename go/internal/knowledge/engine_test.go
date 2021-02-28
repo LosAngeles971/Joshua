@@ -49,9 +49,9 @@ func TestCloningPaths(t *testing.T) {
 	e1 := Edge{ Cause: v1, Effect: success, }
 	e2 := Edge{ Cause: v2, Effect: success,	}
 	p1 := Path{
-		Path: []Edge{
-			e1,
-			e2,
+		Path: []*Edge{
+			&e1,
+			&e2,
 		},
 	}
 	init := ctx.CreateEmptyState()

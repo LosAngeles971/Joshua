@@ -7,7 +7,7 @@ ____
 
 
 **Joshua** is a software. 
-It was born from an inspiration coming from reading a book footnote:[Massimo Chiriatti - ???], and its purpose is solving generics problems using a combination of **knowledge** and **state**. 
+It was born from an inspiration coming from reading a book footnote:[??? - ???], and its purpose is solving generics problems using a combination of **knowledge** and **state**. 
 The knowledge consists of **events** and relationships between events. 
 An event is _something_ that can occur under certain circumstances, for example an event may be "the farmer reaches the est bank of the river", and it can occur if the farmer is on the ovest bank of the river.
 A relationship ties two events under the principle of **cause-effect**, thus the occurrence of an event can cause the occurrence of other events. 

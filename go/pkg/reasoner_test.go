@@ -8,7 +8,7 @@ import (
 	kkk "it/losangeles971/joshua/internal/knowledge"
 )
 
-func TestLogicReasoning(t *testing.T) {
+func TestFarmer(t *testing.T) {
 	k := kkk.Knowledge{}
 	err := k.Load("../../resources/k_contadino.yml")
 	if err != nil {

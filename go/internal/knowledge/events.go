@@ -32,6 +32,7 @@ From model perspective a Event is the vertex of directed graph, where the edges 
 
 type Event struct {
 	ID			string 			`yaml:"id"`
+	UID         int				`yaml:"uid"`
 	Conditions	[]string 		`yaml:"conditions"`
 	Assignments	[]string 		`yaml:"assignments"`
 	Effects		[]*Relationship	`yaml:"effects"`

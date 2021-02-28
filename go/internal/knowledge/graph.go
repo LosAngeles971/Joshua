@@ -7,9 +7,10 @@ import (
 type Edge struct {
 	Cause 	*Event	
 	Effect 	*Event
+	Outcome	string
 }
 
-func (e Edge) IsInfluencedBy(ee Edge) (bool, error) {
+func (e Edge) IsInfluencedBy(ee *Edge) (bool, error) {
 	if ok, err := e.Cause.IsInfluencedBy(ee.Cause); ok || err != nil {
 		return ok, err
 	}
@@ -26,13 +27,33 @@ func (e Edge) IsInfluencedBy(ee Edge) (bool, error) {
 }
 
 type Path struct {
-	Path 		[]Edge			`yaml:"path"`
+	Path 		[]*Edge			`yaml:"path"`
 	Executed 	bool			`yaml:"executed"`
 	Input 		ctx.State		`yaml:"input"`
 	Output 		ctx.State		`yaml:"output"`
 	Outcome 	string			`yaml:"outcome"`
 	Changed 	bool			`yaml:"changed"`
 	Cycle 		int				`yaml:"cycle"`
+}
+
+// Clone a Path resetting its fields
+func (p *Path) clone() *Path {
+	n := Path{
+		Path: []*Edge{},
+		Executed: false,
+		Outcome: CE_OUTCOME_NULL,
+		Changed: false,
+		Cycle: -1,
+	}
+	for _, e := range p.Path {
+		ee := Edge{
+			Cause: e.Cause,
+			Effect: e.Effect,
+			Outcome: CE_OUTCOME_NULL,
+		}
+		n.Path = append(n.Path, &ee)
+	}
+	return &n
 }
 
 // Used by genetic library
@@ -93,7 +114,7 @@ func getPath(cause *Event, effect *Event) Path {
 		Effect: effect,
 	}
 	return Path{
-		Path: []Edge{e},
+		Path: []*Edge{&e},
 		Executed: false,
 		Changed: false,
 		Outcome: CE_OUTCOME_NULL,
@@ -101,7 +122,7 @@ func getPath(cause *Event, effect *Event) Path {
 	}
 }
 
-func getBranch(o *Path, e Edge) Path {
+func getBranch(o *Path, e *Edge) Path {
 	p := Path{
 		Path: append(o.Path, e),
 		Executed: false,
@@ -126,10 +147,10 @@ func backward(p *Path, k Knowledge, s *Stack) {
 		// to avoid loops
 		if !p.Contains(cause) {
 			if i == 0 {
-				p.Path = append(p.Path, e)
+				p.Path = append(p.Path, &e)
 				s.Push(p)
 			} else {
-				b := getBranch(p, e)
+				b := getBranch(p, &e)
 				s.Push(&b)
 			}
 		}

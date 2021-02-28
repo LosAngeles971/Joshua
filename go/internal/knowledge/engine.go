@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	ctx "it/losangeles971/joshua/internal/context"
 	"sort"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -26,8 +25,10 @@ func (p *Path) run(input ctx.State, tail int) (error) {
 		e := p.Path[i]
 		outcome, output, err := e.Cause.EffectHappen(input, e.Effect)
 		if err != nil {
+			e.Outcome = CE_OUTCOME_ERROR
 			return err
 		}
+		e.Outcome = outcome
 		p.Outcome = outcome
 		p.Output = output.Clone()
 		if !p.Input.PartOf(p.Output) {
@@ -40,6 +41,9 @@ func (p *Path) run(input ctx.State, tail int) (error) {
 /* 
 Argument input comes from the execution of previous paths
 and override the internal input of the receiver's struct.
+
+NOTE: if the first item is the last effect of the chain
+
 The verification must got for attempts:
 - just the first rel
 - if not the first -1 and then the first
@@ -113,22 +117,20 @@ func (q Queue) Size() (int) {
 	return len(q.Paths)
 }
 
+
+// This method clone an executed Path and put it into the queue
+// Such situazion happens, when the state changed and the change makes
+// an already executed path applicable again
 func (q *Queue) addClone(s *Path) (*Path) {
-	n := Path{
-		Path: s.Path,
-		Executed: false,
-		Outcome: CE_OUTCOME_NULL,
-		Changed: false,
-		Cycle: -1,
-	}
+	n := s.clone()
 	for _, ss := range q.Paths {
-		if !ss.Executed && ss.Equals(&n) {
+		if !ss.Executed && ss.Equals(n) {
 			// such type of path is already in queue ready to be executed
 			return nil
 		}
 	}
-	q.Paths = append(q.Paths, &n)
-	return &n
+	q.Paths = append(q.Paths, n)
+	return n
 }
 
 /*
@@ -193,6 +195,25 @@ func createQueue(data ctx.State, k Knowledge, effect *Event) Queue {
 		Paths: GetAllPaths(k, effect),
 	}
 	return q
+}
+
+/*
+This method applies genetic algorthms to solve a Path in unknown condition.
+An unknown condition means that the Path references undefined variables.
+The undefined variables must have a range of possible values.
+*/
+func solveByGenetics(path *Path, init ctx.State) (ctx.State, bool, error) {
+	ginit := init.Clone()
+	p := MakePopulation(path, init)
+	err := CycleGenerations(&p, 100)
+	if err != nil {
+		return ginit, false, err
+	}
+	ok, err := p.GetOneSolution(&ginit)
+	if err != nil {
+		return ginit, false, err
+	}
+	return ginit, ok, nil
 }
 
 /*

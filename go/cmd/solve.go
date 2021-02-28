@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"it/losangeles971/joshua/internal/knowledge"
 	"it/losangeles971/joshua/internal/problems"
+	"it/losangeles971/joshua/internal/outputs"
 	"it/losangeles971/joshua/pkg"
 	"os"
 	"github.com/spf13/cobra"
@@ -13,7 +14,7 @@ var knowledgeFile string
 var problemFile string
 var solutionFile string
 var maxCycles int
-var queuelog bool
+var dotFile string
 
 // Command to execute a reason
 var solveCmd = &cobra.Command{
@@ -52,6 +53,13 @@ Usage:
 				os.Exit(1)
 			}
 		}
+		if len(dotFile) > 0 {
+			err = outputs.SaveDot(queue, dotFile)
+			if err != nil {
+				fmt.Println("Error writing the dot solution file: ", err)
+				os.Exit(1)
+			}
+		}
 	},
 }
 
@@ -59,6 +67,7 @@ func init() {
 	solveCmd.Flags().StringVarP(&knowledgeFile, "knowledge", "k", "", "YAML file representing the knowledge")
 	solveCmd.Flags().StringVarP(&problemFile, "problem", "p", "", "YAML file describing the problem")
 	solveCmd.Flags().StringVarP(&solutionFile, "output", "o", "", "YAML file to host the solution")
+	solveCmd.Flags().StringVarP(&dotFile, "dot", "d", "", "Graphwiz Dot file of the solution")
 	solveCmd.Flags().IntVarP(&maxCycles, "max-cycles", "m", 100, "Maximum number of cycles (default 100)")
 	solveCmd.MarkFlagRequired("knowledge")
 	solveCmd.MarkFlagRequired("problem")

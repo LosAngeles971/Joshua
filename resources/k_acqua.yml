@@ -1,6 +1,6 @@
 ---
   knowlegde:
-    - id: Empty C in A
+    - id: "Empty C in A"
       conditions:
         - C > 0
       effects:
@@ -12,7 +12,7 @@
         - C = C - SubC
         - A = A + SubC
 
-    - id: Empty C in B
+    - id: "Empty C in B"
       conditions:
         - C > 0
       effects:
@@ -24,7 +24,7 @@
         - C = C - SubC
         - B = B + SubC
 
-    - id: Empty A in B
+    - id: "Empty A in B"
       conditions:
         - A > 0
       effects:
@@ -36,7 +36,7 @@
         - A = A - SubA
         - B = B + SubA
 
-    - id: Empty A in C
+    - id: "Empty A in C"
       conditions:
         - A > 0
       effects:
@@ -48,7 +48,7 @@
         - A = A - SubA
         - C = C + SubA        
 
-    - id: Empty B in A
+    - id: "Empty B in A"
       conditions:
         - B > 0
       effects:
@@ -60,7 +60,7 @@
         - B = B - SubB
         - A = A + SubB
 
-    - id: Empty B in C
+    - id: "Empty B in C"
       conditions:
         - B > 0
       effects:
@@ -72,6 +72,6 @@
         - B = B - SubB
         - C = C + SubC
 
-    - id: B o C contiene 4
+    - id: "B or C contains 4"
       conditions:
         - B == 4 || C == 4

@@ -2,11 +2,11 @@
   knowlegde:
     - id: Carlo is the pilot
       conditions:
-        - Carlo_wage > Pilot_wage
+        - Carlo_wage > Copilot_wage
         - Pilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Pilot = Carlo
 
@@ -16,7 +16,7 @@
         - Pilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Pilot = Bruno
 
@@ -26,94 +26,80 @@
         - Pilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Pilot = Alberto
 
     - id: Carlo is the copilot
       conditions:
         - Carlo_is_a_only_child == 1
-        - Carlo_wage > Pilot_wage
+        - Carlo_wage < Pilot_wage
+        - Carlo_wage < Engineer_wage
         - Copilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Copilot = Carlo
 
     - id: Bruno is the copilot
       statements:
         - Bruno_is_a_only_child == 1
-        - Bruno_wage < Alberto_wage
-        - Bruno_wage < Carlo_wage
+        - Bruno_wage < Pilot_wage
+        - Bruno_wage < Engineer_wage
         - Copilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Copilot = Bruno        
     
     - id: Alberto is the copilot
       conditions:
         - Alberto_is_a_only_child == 1
-        - Alberto_wage < Bruno_wage
-        - Alberto_wage < Carlo_wage
+        - Alberto_wage < Pilot_wage
+        - Alberto_wage < Engineer_wage
         - Copilot == 0
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Copilot = Alberto      
 
     - id: Carlo is the engineer
       conditions:
         - Engineer == 0
+        - Carlo_wage > Copilot_wage
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Engineer = Carlo
 
     - id: Bruno is the engineer
       conditions:
         - Engineer == 0
+        - Bruno_wage > Copilot_wage
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Engineer = Bruno        
     
     - id: Alberto is the engineer
       conditions:
         - Engineer == 0
+        - Alberto_wage > Copilot_wage
       effects:
         - weight: 0.3
-          event: "All jobs are defined"
+          event: "I know their jobs"
       assignments:
         - Engineer = Alberto
 
-    - id: Carlo is a only child
+    - id: "I know their jobs"
       conditions:
-        - Carlo_is_a_only_child == 1
-
-    - id: Bruno is a only child
-      conditions:
-        - Bruno_is_a_only_child == 1
-
-    - id: Alberto is a only child
-      conditions:
-        - Alberto_is_a_only_child == 1
-
-    - id: Copilot wage is the least
-
-    - id: Carlo earns more than the pilot
-
-    - id: All jobs are defined
-      conditions:
-        - Pilota != 0 && Copilota != 0 && Ingegnere != 0
-        - Pilota != Copilota && Pilota != Ingegnere &&  Copilota != Ingegnere
+        - Pilot != 0 && Copilot != 0 && Engineer != 0
+        - Pilot != Copilot && Pilot != Engineer &&  Copilot != Engineer
       effects:
         - weight: 1.0
           event: "I know their jobs"
-
-    - id: "I know their jobs"

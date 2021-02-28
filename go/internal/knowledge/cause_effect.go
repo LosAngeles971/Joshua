@@ -30,15 +30,6 @@ func (r Relationship) GetWeight() float64 {
 	return r.Weight
 }
 
-/*
-func (l Relationship) Equals(r Relationship) bool {
-	if l.Cause.GetID() == r.Cause.GetID() && l.Effect.GetID() == r.Effect.GetID() {
-		return true
-	}
-	return false
-}
-*/
-
 func (cause *Event) EffectHappen(init ctx.State, effect *Event) (string, ctx.State, error) {
 	data := init.Clone()
 	outcome, err := cause.CanHappen(&data)
@@ -63,38 +54,3 @@ func (cause *Event) EffectHappen(init ctx.State, effect *Event) (string, ctx.Sta
 	}
 	return CE_OUTCOME_TRUE, data, nil
 }
-
-
-/*
-func (influenced Relationship) IsInfluencedBy(cause Event, effect Event) (bool, error) {
-	ok, err := influenced.Cause.IsInfluencedBy(influencer.Cause)
-	if err != nil {
-		return ok, err
-	}
-	if ok {
-		return true, nil
-	}
-	ok, err = influenced.Cause.IsInfluencedBy(influencer.Effect)
-	if err != nil {
-		return ok, err
-	}
-	if ok {
-		return true, nil
-	}
-	ok, err = influenced.Effect.IsInfluencedBy(influencer.Cause)
-	if err != nil {
-		return ok, err
-	}
-	if ok {
-		return true, nil
-	}
-	ok, err = influenced.Effect.IsInfluencedBy(influencer.Effect)
-	if err != nil {
-		return ok, err
-	}
-	if ok {
-		return true, nil
-	}
-	return false, nil
-}
-*/

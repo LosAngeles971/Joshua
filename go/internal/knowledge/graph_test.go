@@ -25,24 +25,24 @@ func TestStack(t *testing.T) {
 	e_e, _ := k.GetEvent("E")
 	e_f, _ := k.GetEvent("F")
 	p1 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_f, Effect: success,},
+		Path: []*Edge{
+			&Edge{Cause: e_f, Effect: success,},
 		},
 	}
 	p2 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_d, Effect: e_e,},
+		Path: []*Edge{
+			&Edge{Cause: e_d, Effect: e_e,},
 		},
 	}
 	p3 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_c, Effect: e_d,},
+		Path: []*Edge{
+			&Edge{Cause: e_c, Effect: e_d,},
 		},
 	}
 	p4 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_b, Effect: e_c,},
-			Edge{Cause: e_a, Effect: e_b,},
+		Path: []*Edge{
+			&Edge{Cause: e_b, Effect: e_c,},
+			&Edge{Cause: e_a, Effect: e_b,},
 		},
 	}
 	ss := []*Path{p1, p2, p3, p4}
@@ -79,15 +79,15 @@ func TestBranch(t *testing.T) {
 	e_e, _ := k.GetEvent("E")
 	e_f, _ := k.GetEvent("F")
 	p1 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_f, Effect: success,},
+		Path: []*Edge{
+			&Edge{Cause: e_f, Effect: success,},
 		},
 	}
 	edge_1 := Edge{
 		Cause: e_e,
 		Effect: e_f,
 	} 
-	p2 := getBranch(p1, edge_1)
+	p2 := getBranch(p1, &edge_1)
 	if len(p1.Path) != 1 {
 		fmt.Println("Corrupted p1")
 		t.FailNow()
@@ -118,25 +118,25 @@ func TestAllPaths(t *testing.T) {
 	e_e, _ := k.GetEvent("E")
 	e_f, _ := k.GetEvent("F")
 	p1 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_f, Effect: e_z,},
+		Path: []*Edge{
+			&Edge{Cause: e_f, Effect: e_z,},
 		},
 	}
 	p2 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_c, Effect: e_z,},
-			Edge{Cause: e_b, Effect: e_c,},
-			Edge{Cause: e_a, Effect: e_b,},
-			Edge{Cause: e_e, Effect: e_a,},
+		Path: []*Edge{
+			&Edge{Cause: e_c, Effect: e_z,},
+			&Edge{Cause: e_b, Effect: e_c,},
+			&Edge{Cause: e_a, Effect: e_b,},
+			&Edge{Cause: e_e, Effect: e_a,},
 		},
 	}
 	p3 := &Path{
-		Path: []Edge{
-			Edge{Cause: e_d, Effect: e_z,},
-			Edge{Cause: e_c, Effect: e_d,},
-			Edge{Cause: e_b, Effect: e_c,},
-			Edge{Cause: e_a, Effect: e_b,},
-			Edge{Cause: e_e, Effect: e_a,},
+		Path: []*Edge{
+			&Edge{Cause: e_d, Effect: e_z,},
+			&Edge{Cause: e_c, Effect: e_d,},
+			&Edge{Cause: e_b, Effect: e_c,},
+			&Edge{Cause: e_a, Effect: e_b,},
+			&Edge{Cause: e_e, Effect: e_a,},
 		},
 	}
 	allPaths := GetAllPaths(k, e_z)

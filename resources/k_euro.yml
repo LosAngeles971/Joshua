@@ -1,6 +1,6 @@
 ---
-  events:
-    - id: One day of spending
+  knowlegde:
+    - id: "One day of spending"
       conditions:
         - Inheritance > 1.0
       effects:
@@ -9,13 +9,13 @@
         - weight: 0.5
           event: "He has less than 1 euro"
 
-    - id: The inheritance is halved
+    - id: "The inheritance is halved"
       effects:
         - weight: 0.5
           event: "He has less than 1 euro"
       assignments:
         - Inheritance = Inheritance / 2
 
-    - id: He has less than 1 euro
+    - id: "He has less than 1 euro"
       conditions:
         - Inheritance < 1.0
