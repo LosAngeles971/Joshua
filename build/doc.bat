@@ -1,2 +1,0 @@
-set CI_PROJECT_DIR=/c/Users/losangeles971/myhome/black/joshua
-docker run --rm -v %CI_PROJECT_DIR%/whitepaper/:/documents/ asciidoctor/docker-asciidoctor:latest asciidoctor -r asciidoctor-pdf -r asciidoctor-mathematical -b pdf /documents/0.main.adoc -o /documents/joshua.pdf

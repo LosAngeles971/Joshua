@@ -1,6 +1,0 @@
----
-  variables:
-    - name: Inheritance
-      value: 1024
-      defined: true
-  success: "He has less than 1 euro"
