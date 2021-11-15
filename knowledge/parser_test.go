@@ -1,7 +1,6 @@
 package knowledge
 
 import (
-	"io/ioutil"
 	"testing"
 )
 
@@ -18,11 +17,7 @@ var	EVENTS = []string{
 	}
 
 func TestParse(t *testing.T) {
-	source, err := ioutil.ReadFile("../../../resources/the_farmer.joshua")
-	if err != nil {
-		t.Fatal(err)
-	}
-	ee, err := Parse(string(source))
+	ee, err := Parse(the_farmer)
 	if err != nil {
 		t.Fatal(err)
 	}

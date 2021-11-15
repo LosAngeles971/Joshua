@@ -1,3 +1,6 @@
+/*
+definition of the command line flags
+*/
 package cmd
 
 import (
@@ -6,7 +9,8 @@ import (
 	"it/losangeles971/joshua/knowledge"
 	"it/losangeles971/joshua/outputs"
 	"log"
-
+	"os"
+	
 	"github.com/spf13/cobra"
 )
 

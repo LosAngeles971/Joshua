@@ -1,1 +1,0 @@
-* https://coderbook.com/@marcus/how-to-render-markdown-syntax-as-html-using-python/

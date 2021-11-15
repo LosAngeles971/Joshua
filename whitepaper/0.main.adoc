@@ -25,7 +25,3 @@ include::5.finance.adoc[]
 include::6.software.adoc[]
 
 :sectnums!:
-
-include::80.appendix.adoc[]
-
-include::90.bibliography.adoc[]

@@ -1,7 +1,6 @@
 package engine
 
 import (
-	"io/ioutil"
 	"testing"
 )
 
@@ -15,12 +14,21 @@ var EXPECTED_VARS = map[string]float64{
 	"Cabbage_location": 0.0,
 }
 
+var the_farmer_problem = `---
+  success: "They are all on the est bank of the river"
+  variables:
+    - name: Farmer_location
+      value: 0.0
+    - name: Wolf_location
+      value: 0.0
+    - name: Goat_location
+      value: 0.0
+    - name: Cabbage_location
+      value: 0.0
+`
+
 func TestLoadProblem(t *testing.T) {
-	source, err := ioutil.ReadFile("../../../resources/the_farmer.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-	s, success, err := LoadProblem(string(source))
+	s, success, err := LoadProblem(the_farmer_problem)
 	if err != nil {
 		t.Fatal(err)
 	}

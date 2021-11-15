@@ -1,2 +1,2 @@
-# Joshua
+# The rules of Joshua
 
