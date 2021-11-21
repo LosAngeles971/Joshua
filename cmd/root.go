@@ -47,7 +47,7 @@ var rootCmd = &cobra.Command{
 		if !ok {
 			log.Fatalf("there is not event '%v' into the knowledge", success_name)
 		}
-		outcome, queue, err := engine.MakeItHappen(k, *s, success, maxCycles)
+		outcome, queue, err := engine.MakeItHappen(k, s, success, maxCycles)
 		if err != nil {
 			log.Fatal(err)
 		}

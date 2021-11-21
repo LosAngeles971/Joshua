@@ -12,7 +12,7 @@ func TestCompleteness(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ok := IsComplete(expr, *state.New())
+	ok := IsComplete(expr, state.NewSimpleState())
 	if ok {
 		t.Fatal("unexpected complete expression")
 	}

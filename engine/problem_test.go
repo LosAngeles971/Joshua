@@ -40,12 +40,8 @@ func TestLoadProblem(t *testing.T) {
 		if !ok {
 			t.Fatalf("missing variable %v", k)
 		}
-		ff, ok := vv.GetValue()
-		if !ok {
-			t.Errorf("variable %v should be defined", k)
-		}
-		if ff.(float64) != v {
-			t.Errorf("expected value %v not %v", v, ff)
+		if vv.(float64) != v {
+			t.Errorf("expected value %v not %v", v, vv)
 		}
 	}
 }

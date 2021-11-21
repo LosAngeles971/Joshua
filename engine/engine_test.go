@@ -147,7 +147,7 @@ func TestLogicReasoning(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s := state.New()
+	s := state.NewSimpleState()
 	s.Add("Farmer_location", 0.0)
 	s.Add("Wolf_location", 0.0)
 	s.Add("Goat_location", 0.0)
@@ -156,7 +156,7 @@ func TestLogicReasoning(t *testing.T) {
 	if !ok {
 		t.Fatal("missing success event")
 	}
-	outcome, solution, err := MakeItHappen(k, *s, success, 100)
+	outcome, solution, err := MakeItHappen(k, s, success, 100)
 	if err != nil {
 		t.Fatal(err)
 	}

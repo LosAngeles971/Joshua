@@ -16,8 +16,8 @@ type Problem struct {
 	Success		string			`yaml:"success"`
 }
 
-func LoadProblem(problemFile string) (*state.State, string, error) {
-	s := state.New()
+func LoadProblem(problemFile string) (state.State, string, error) {
+	s := state.NewSimpleState()
 	p := Problem{}
 	err := yaml.Unmarshal([]byte(problemFile), &p)
 	if err != nil {
