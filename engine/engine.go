@@ -1,3 +1,12 @@
+/*
+This package exports the main functions of Joshua to the CLI and to external programs.
+
+MakeItHappen functions:
+Given a hypothetical effect, is it happening? depending on the current Universe of knowledge+context?
+If after a reasoning at least one cause-effect relationship changed its state, you need to do a new cycle
+of reasoning
+
+*/
 package engine
 
 import (
@@ -9,6 +18,7 @@ import (
 	"text/tabwriter"
 )
 
+// PrintSummary prints the results of an execution to the console (standard output)
 func PrintSummary(outcome string, queue knowledge.Queue) {
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.AlignRight|tabwriter.Debug)
@@ -18,11 +28,7 @@ func PrintSummary(outcome string, queue knowledge.Queue) {
 	w.Flush()
 }
 
-/*
-Given a hypothetical effect, is it happening? depending on the current Universe of knowledge+context?
-If after a reasoning at least one cause-effect relationship changed its state, you need to do a new cycle
-of reasoning
-*/
+// MakeItHappen verifies if an event occurs given a knowledge and an initial state
 func MakeItHappen(k knowledge.Knowledge, init state.State, effect *knowledge.Event, max_cycles int) (string, knowledge.Queue, error) {
 	queue := k.CreateQueue(init, effect)
 	cycles := 0

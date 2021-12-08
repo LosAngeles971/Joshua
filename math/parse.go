@@ -1,3 +1,6 @@
+/*
+This package provides the mathematical functions for event execution
+*/
 package math
 
 import (
@@ -7,7 +10,7 @@ import (
 	"github.com/Knetic/govaluate"
 )
 
-// it returns the parsed expression of a string containing a mathematical expression
+// ParseExpression returns the object representing a parsed mathematical expression
 func ParseExpression(e string) (*govaluate.EvaluableExpression, error) {
 	expr, err := govaluate.NewEvaluableExpressionWithFunctions(e, Functions)
 	if err != nil {
@@ -25,9 +28,9 @@ func parseAssignment(expr string) (string, string, error) {
 	return strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]), nil
 }
 
-// given an assignement, this method returns:
-// - the target variable of the assigment
-// - the parsed assignment's expression
+// ParseAssignment runs an assignment of a variable, returning:
+// - the target variable
+// - the parsed expression
 // - the possible error
 func ParseAssignment(assignemnt string) (string, *govaluate.EvaluableExpression, error) {
 	v, e, err := parseAssignment(assignemnt)

@@ -1,3 +1,7 @@
+/*
+Datamap is a really simple implementation of the state's interface, since it is just a map of interfaces,
+where every tuple (k,v) is a variable.
+*/
 package state
 
 import (
@@ -5,16 +9,19 @@ import (
 	"sort"
 )
 
-type Datamap struct {
+// Datamap is a protected struct, and its functions has pointers receivers
+type datamap struct {
 	Vars map[string]interface{}
 }
 
+// SimpleState implements the state's interface
 type SimpleState struct {
-	Data *Datamap
+	Data *datamap
 }
 
+// Create a new SimpleState with no variables
 func NewSimpleState() SimpleState {
-	d := Datamap{
+	d := datamap{
 		Vars: map[string]interface{}{},
 	}
 	return SimpleState{

@@ -5,7 +5,7 @@ import (
 	"github.com/Knetic/govaluate"
 )
 
-// set of common mathematical functions
+// Functions includes common mathematical functions usable into the event's expressions
 var Functions = map[string]govaluate.ExpressionFunction{
 	"min": func(args ...interface{}) (interface{}, error) {
 		min := 0.0

@@ -1,3 +1,6 @@
+/*
+Knowledge is a set of events and their relationships in terms of cause-effect bindings.
+*/
 package knowledge
 
 import "it/losangeles971/joshua/state"

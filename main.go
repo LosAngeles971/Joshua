@@ -1,3 +1,4 @@
+// main package of CLI implementation
 package main
 
 import (
