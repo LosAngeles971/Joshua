@@ -1,11 +1,8 @@
 /*
-This package exports the main functions of Joshua to the CLI and to external programs.
+This package exports the main functions of Joshua to the CLI and/or external programs.
 
-MakeItHappen functions:
-Given a hypothetical effect, is it happening? depending on the current Universe of knowledge+context?
-If after a reasoning at least one cause-effect relationship changed its state, you need to do a new cycle
-of reasoning
-
+The main function is "IsItGoingToHappen"::
+Given an event, named success event, the function verifies it may happen starting from an initial state.
 */
 package engine
 
@@ -94,6 +91,7 @@ func isItGoingToHappen(k knowledge.Knowledge, init state.State, effect *knowledg
 	}
 }
 
+// IsItGoingToHappen exports the internal function isItGoingToHappen
 func IsItGoingToHappen(ksource string, init state.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
 	kkk, err := knowledge.Load(ksource)
 	if err != nil {

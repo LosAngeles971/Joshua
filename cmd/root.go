@@ -1,6 +1,4 @@
-/*
-definition of the command line flags
-*/
+// CLI implementation
 package cmd
 
 import (
@@ -8,7 +6,6 @@ import (
 	"it/losangeles971/joshua/engine"
 	"it/losangeles971/joshua/outputs"
 	"log"
-	"os"
 	
 	"github.com/spf13/cobra"
 )
@@ -20,12 +17,13 @@ var solutionFile string
 var maxCycles int
 var dotFile string
 
+// CLI command to apply knowledge
 var rootCmd = &cobra.Command{
 	Use:   "joshua",
 	Short: "joshua",
-	Long:  `joshua
-	Usage:
-		joshua --knowledge|-k <knowledge-file> --problem|-p <problem-file>`,
+	Long:  `joshua::
+	Applying knowledge to understand if a "success" may occur starting from a given initial state.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		source, err := ioutil.ReadFile(knowledgeFile)
 		if err != nil {
@@ -54,7 +52,6 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
-		os.Exit(1)
 	}
 }
 

@@ -24,7 +24,6 @@ type SimpleState struct {
 
 type SimpleStateOption func(*SimpleState)
 
-// WithSep sets the separation string for the fully qualified name of the fields
 func WithYAML(filename string) SimpleStateOption {
 	return func(s *SimpleState) {
 		in, err := ioutil.ReadFile(filename)
@@ -32,6 +31,12 @@ func WithYAML(filename string) SimpleStateOption {
 			return
 		}
 		yaml.Unmarshal(in, s.Data)
+	}
+}
+
+func WithMap(mm map[string]interface{}) SimpleStateOption {
+	return func(s *SimpleState) {
+		s.Data.Vars = mm
 	}
 }
 
