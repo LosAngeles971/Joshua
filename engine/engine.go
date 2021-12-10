@@ -11,10 +11,10 @@ package engine
 
 import (
 	"errors"
-	"os"
 	"fmt"
 	"it/losangeles971/joshua/knowledge"
 	"it/losangeles971/joshua/state"
+	"os"
 	"text/tabwriter"
 )
 
@@ -28,8 +28,8 @@ func PrintSummary(outcome string, queue knowledge.Queue) {
 	w.Flush()
 }
 
-// MakeItHappen verifies if an event occurs given a knowledge and an initial state
-func MakeItHappen(k knowledge.Knowledge, init state.State, effect *knowledge.Event, max_cycles int) (string, knowledge.Queue, error) {
+// isItGoingToHappen verifies if an event occurs given a knowledge and an initial state
+func isItGoingToHappen(k knowledge.Knowledge, init state.State, effect *knowledge.Event, max_cycles int) (string, knowledge.Queue, error) {
 	queue := k.CreateQueue(init, effect)
 	cycles := 0
 	current := init.Clone()
@@ -92,4 +92,16 @@ func MakeItHappen(k knowledge.Knowledge, init state.State, effect *knowledge.Eve
 			return knowledge.EFFECT_OUTCOME_ERROR, queue, errors.New("reached max cycles")
 		}
 	}
+}
+
+func IsItGoingToHappen(ksource string, init state.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
+	kkk, err := knowledge.Load(ksource)
+	if err != nil {
+		return "", knowledge.Queue{}, err
+	}
+	ee, ok := kkk.GetEvent(effect)
+	if !ok {
+		return "", knowledge.Queue{}, fmt.Errorf("success event %v does not exist into the knowledge", effect)
+	}
+	return isItGoingToHappen(kkk, init, ee, max_cycles)
 }

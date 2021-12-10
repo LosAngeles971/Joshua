@@ -143,20 +143,12 @@ event(They are all on the est bank of the river) {
   `
 
 func TestLogicReasoning(t *testing.T) {
-	k, err := knowledge.Load(the_farmer)
-	if err != nil {
-		t.Fatal(err)
-	}
 	s := state.NewSimpleState()
 	s.Add("Farmer_location", 0.0)
 	s.Add("Wolf_location", 0.0)
 	s.Add("Goat_location", 0.0)
 	s.Add("Cabbage_location", 0.0)
-	success, ok := k.GetEvent("They are all on the est bank of the river")
-	if !ok {
-		t.Fatal("missing success event")
-	}
-	outcome, solution, err := MakeItHappen(k, s, success, 100)
+	outcome, solution, err := IsItGoingToHappen(the_farmer, s, "They are all on the est bank of the river", 100)
 	if err != nil {
 		t.Fatal(err)
 	}

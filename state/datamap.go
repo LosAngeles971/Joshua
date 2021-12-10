@@ -6,17 +6,33 @@ package state
 
 import (
 	"fmt"
+	"io/ioutil"
 	"sort"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Datamap is a protected struct, and its functions has pointers receivers
 type datamap struct {
-	Vars map[string]interface{}
+	Vars map[string]interface{} `yaml:"vars"`
 }
 
 // SimpleState implements the state's interface
 type SimpleState struct {
 	Data *datamap
+}
+
+type SimpleStateOption func(*SimpleState)
+
+// WithSep sets the separation string for the fully qualified name of the fields
+func WithYAML(filename string) SimpleStateOption {
+	return func(s *SimpleState) {
+		in, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return
+		}
+		yaml.Unmarshal(in, s.Data)
+	}
 }
 
 // Create a new SimpleState with no variables
