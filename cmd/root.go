@@ -39,14 +39,6 @@ var rootCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 		}
-		/*
-		if len(dotFile) > 0 {
-			err = outputs.SaveDot(queue, dotFile)
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-		*/
 	},
 }
 
