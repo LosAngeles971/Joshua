@@ -2,7 +2,6 @@ package engine
 
 import (
 	"it/losangeles971/joshua/knowledge"
-	"it/losangeles971/joshua/state"
 	log "github.com/sirupsen/logrus"
 	"testing"
 )
@@ -143,12 +142,12 @@ event(They are all on the est bank of the river) {
 `
 
 func TestLogicReasoning(t *testing.T) {
-	s := state.NewSimpleState()
+	s := knowledge.NewState()
 	s.Add("Farmer_location", 0.0)
 	s.Add("Wolf_location", 0.0)
 	s.Add("Goat_location", 0.0)
 	s.Add("Cabbage_location", 0.0)
-	outcome, solution, err := IsItGoingToHappen(the_farmer, s, "They are all on the est bank of the river", 100)
+	outcome, solution, err := IsItGoingToHappen(the_farmer, *s, "They are all on the est bank of the river", 100)
 	if err != nil {
 		t.Fatal(err)
 	}

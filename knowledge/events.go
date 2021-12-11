@@ -15,8 +15,6 @@ package knowledge
 
 import (
 	"fmt"
-	"it/losangeles971/joshua/math"
-	"it/losangeles971/joshua/state"
 
 	"github.com/Knetic/govaluate"
 	log "github.com/sirupsen/logrus"
@@ -98,7 +96,7 @@ func (event *Event) solveEffects(kkk []*Event) error {
 
 func (event *Event) addConditions(exprs []string) error {
 	for _, expr := range exprs {
-		condition, err := math.ParseExpression(expr)
+		condition, err := parseExpression(expr)
 		if err != nil {
 			return err
 		}
@@ -109,7 +107,7 @@ func (event *Event) addConditions(exprs []string) error {
 
 func (event *Event) addAssignments(exprs []string) error {
 	for _, expr := range exprs {
-		v, a, err := math.ParseAssignment(expr)
+		v, a, err := parseAssignment(expr)
 		if err != nil {
 			return err
 		}
@@ -186,42 +184,42 @@ func (event Event) CanYouCauseThis(effectEvent Event) bool {
 }
 
 // Run executes event's assignements if the event's conditions are all true
-func (f *Event) Run(input state.State) (string, state.State, error) {
+func (f *Event) Run(input State) (string, State, error) {
 	output := input.Clone()
 	for _, expr := range f.conditions {
 		log.Tracef("checking condition [%v] of event [%v]", expr, f.ID)
-		ok := math.IsComplete(expr, output)
+		ok := isComplete(expr, *output)
 		if !ok {
-			return EVENT_OUTCOME_UNKNOWN, output, nil
+			return EVENT_OUTCOME_UNKNOWN, *output, nil
 		}
 		result, err := expr.Evaluate(output.Translate())
 		log.Debugf("condition [%v] of event [%v] got result [%v] and error [%v]", expr, f.ID, result, err)
 		if err != nil {
-			return EVENT_OUTCOME_ERROR, output, err
+			return EVENT_OUTCOME_ERROR, *output, err
 		}
 		vv, ok := result.(bool)
 		if !ok {
-			return EVENT_OUTCOME_ERROR, output, fmt.Errorf("condition must be boolean [%v]", expr.String())
+			return EVENT_OUTCOME_ERROR, *output, fmt.Errorf("condition must be boolean [%v]", expr.String())
 		}
 		if !vv {
-			return EVENT_OUTCOME_FALSE, output, nil
+			return EVENT_OUTCOME_FALSE, *output, nil
 		}
 	}
 	for _, expr := range f.assignments {
 		log.Tracef("running assigment [%v] of event [%v]", expr, f.ID)
-		ok := math.IsComplete(expr.expr, output)
+		ok := isComplete(expr.expr, *output)
 		if !ok {
-			return EVENT_OUTCOME_UNKNOWN, output, nil
+			return EVENT_OUTCOME_UNKNOWN, *output, nil
 		}
 		result, err := expr.expr.Evaluate(output.Translate())
 		log.Debugf("assignment [%v] of event [%v] got result [%v] and error [%v]", expr, f.ID, result, err)
 		if err != nil {
-			return EVENT_OUTCOME_ERROR, output, err
+			return EVENT_OUTCOME_ERROR, *output, err
 		}
 		err = output.Update(expr.variable, result)
 		if err != nil {
-			return EVENT_OUTCOME_ERROR, output, err
+			return EVENT_OUTCOME_ERROR, *output, err
 		}
 	}
-	return EVENT_OUTCOME_TRUE, output, nil
+	return EVENT_OUTCOME_TRUE, *output, nil
 }

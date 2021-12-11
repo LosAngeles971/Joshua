@@ -3,8 +3,6 @@ Knowledge is a set of events and their relationships in terms of cause-effect bi
 */
 package knowledge
 
-import "it/losangeles971/joshua/state"
-
 type Knowledge struct {
 	events []*Event
 }
@@ -67,7 +65,7 @@ func (k Knowledge) GetAllPathsToEvent(effect *Event) []*Path {
 }
 
 // This function creates a Queue containing all possibile paths to the given event
-func (k Knowledge) CreateQueue(data state.State, effect *Event) Queue {
+func (k Knowledge) CreateQueue(data State, effect *Event) Queue {
 	return Queue{
 		Paths: k.GetAllPathsToEvent(effect),
 	}

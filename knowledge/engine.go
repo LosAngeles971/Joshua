@@ -3,13 +3,12 @@ package knowledge
 import (
 	"errors"
 	"fmt"
-	"it/losangeles971/joshua/state"
 
 	log "github.com/sirupsen/logrus"
 )
 
 // IsItGoingToHappen verifies if an event occurs given a knowledge and an initial state
-func IsItGoingToHappen(k Knowledge, init state.State, effect *Event, max_cycles int) (string, Queue, error) {
+func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (string, Queue, error) {
 	log.Debugf("starting graph analysis with max_cycles to %v", max_cycles)
 	queue := k.CreateQueue(init, effect)
 	log.Tracef("starting queue got the size of %v", queue.Size())
@@ -21,7 +20,7 @@ func IsItGoingToHappen(k Knowledge, init state.State, effect *Event, max_cycles 
 			log.Debugf("chosen path from queue is nil -> exit with: %v", EFFECT_OUTCOME_EFFECT_FALSE)
 			return EFFECT_OUTCOME_EFFECT_FALSE, queue, nil
 		}
-		err := path.Run(current, cycles)
+		err := path.Run(*current, cycles)
 		if err != nil {
 			return EFFECT_OUTCOME_ERROR, queue, err
 		}

@@ -2,7 +2,6 @@ package knowledge
 
 import (
 	"errors"
-	"it/losangeles971/joshua/state"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -12,9 +11,9 @@ An edge is a direct connection between two events,
 the source is the "cause" event and the target is the "effect" event.
 */
 type Edge struct {
-	Cause 	*Event `yaml:"cause"`
-	Effect 	*Event `yaml:"effect"`
-	Outcome	string
+	Cause   *Event `yaml:"cause"`
+	Effect  *Event `yaml:"effect"`
+	Outcome string
 }
 
 //e is influenced by ee if at least one event of ee is also an event of ee
@@ -36,7 +35,7 @@ func (e Edge) isInfluencedBy(ee *Edge) (bool, error) {
 
 // if cause ran successfully, then try to run then effect
 // note: if effect failed to occur, the changed applied by cause still remain
-func (e *Edge) Run(input state.State) (string, state.State, error) {
+func (e *Edge) Run(input State) (string, State, error) {
 	log.Debugf("checking the cause-effect between event %v and effect %v", e.Cause.ID, e.Effect.ID)
 	cause_outcome, cause_output, err := e.Cause.Run(input)
 	if err != nil {
@@ -63,28 +62,28 @@ func (e *Edge) Run(input state.State) (string, state.State, error) {
 
 // Path is a concatenation of edges, aka it is a chain of events tied by cause-effect relationshiop
 type Path struct {
-	Path 		[]*Edge			`yaml:"path"`
-	Executed 	bool			`yaml:"executed"`
-	Input 		state.State		`yaml:"input"`
-	Output 		state.State		`yaml:"output"`
-	Outcome 	string			`yaml:"outcome"`
-	Changed 	bool			`yaml:"changed"`
-	Cycle 		int				`yaml:"cycle"`
+	Path     []*Edge `yaml:"path"`
+	Executed bool    `yaml:"executed"`
+	Input    State   `yaml:"input"`
+	Output   State   `yaml:"output"`
+	Outcome  string  `yaml:"outcome"`
+	Changed  bool    `yaml:"changed"`
+	Cycle    int     `yaml:"cycle"`
 }
 
 // Clone a Path resetting its fields
 func (p *Path) clone() *Path {
 	n := Path{
-		Path: []*Edge{},
+		Path:     []*Edge{},
 		Executed: false,
-		Outcome: EFFECT_OUTCOME_NULL,
-		Changed: false,
-		Cycle: -1,
+		Outcome:  EFFECT_OUTCOME_NULL,
+		Changed:  false,
+		Cycle:    -1,
 	}
 	for _, e := range p.Path {
 		ee := Edge{
-			Cause: e.Cause,
-			Effect: e.Effect,
+			Cause:   e.Cause,
+			Effect:  e.Effect,
 			Outcome: EFFECT_OUTCOME_NULL,
 		}
 		n.Path = append(n.Path, &ee)
@@ -135,7 +134,7 @@ func (p *Path) equals(pp *Path) bool {
 }
 
 // This function run a path starting from a specific index
-func (p *Path) runFromTail(input state.State, tail int) (error) {
+func (p *Path) runFromTail(input State, tail int) error {
 	for i := tail; i >= 0; i-- {
 		e := p.Path[i]
 		outcome, output, err := e.Run(input)
@@ -153,7 +152,7 @@ func (p *Path) runFromTail(input state.State, tail int) (error) {
 	return nil
 }
 
-/* 
+/*
 Argument input comes from the execution of previous paths
 and override the internal input of the receiver's struct.
 
@@ -165,12 +164,12 @@ The verification must got for attempts:
 - ...
 - if not the first - n, first - n -1, ..., the the first
 */
-func (p *Path) Run(input state.State, cycle int) (error) {
+func (p *Path) Run(input State, cycle int) error {
 	p.Cycle = cycle
 	if p.Executed {
 		return errors.New("asked to run an already executed state")
 	}
-	p.Input = input.Clone()
+	p.Input = *input.Clone()
 	p.Executed = true
 	p.Changed = false
 	for i := 0; i < len(p.Path); i++ {
@@ -178,10 +177,10 @@ func (p *Path) Run(input state.State, cycle int) (error) {
 		if err != nil {
 			return err
 		}
-		input = p.Output.Clone()
+		input = *p.Output.Clone()
 		switch p.Outcome {
 		case EFFECT_OUTCOME_CAUSE_FALSE:
-			return nil;
+			return nil
 		case EFFECT_OUTCOME_EFFECT_FALSE:
 			return nil
 		case EFFECT_OUTCOME_ERROR:
@@ -200,25 +199,25 @@ func (p *Path) Run(input state.State, cycle int) (error) {
 // create a path between two events
 func createPath(cause *Event, effect *Event) Path {
 	e := Edge{
-		Cause: cause,
+		Cause:  cause,
 		Effect: effect,
 	}
 	return Path{
-		Path: []*Edge{&e},
+		Path:     []*Edge{&e},
 		Executed: false,
-		Changed: false,
-		Outcome: EFFECT_OUTCOME_NULL,
-		Cycle: -1,
+		Changed:  false,
+		Outcome:  EFFECT_OUTCOME_NULL,
+		Cycle:    -1,
 	}
 }
 
 func getBranch(o *Path, e *Edge) Path {
 	p := Path{
-		Path: append(o.Path, e),
+		Path:     append(o.Path, e),
 		Executed: false,
-		Changed: false,
-		Outcome: EFFECT_OUTCOME_NULL,
-		Cycle: -1,
+		Changed:  false,
+		Outcome:  EFFECT_OUTCOME_NULL,
+		Cycle:    -1,
 	}
 	return p
 }
@@ -237,12 +236,12 @@ func (s Path) isInfluencedBy(p Path) (bool, error) {
 
 // Here it is necessary to avoid loops
 func backward(p *Path, k Knowledge, s *Stack) {
-	last := p.Path[len(p.Path) - 1]
+	last := p.Path[len(p.Path)-1]
 	effect := last.Cause
 	causes := k.WhoCause(*effect)
 	for i, cause := range causes {
 		e := Edge{
-			Cause: cause,
+			Cause:  cause,
 			Effect: effect,
 		}
 		// If the cause is already into the Path, the Path ends here

@@ -9,7 +9,6 @@ package engine
 import (
 	"fmt"
 	"it/losangeles971/joshua/knowledge"
-	"it/losangeles971/joshua/state"
 	"os"
 	"text/tabwriter"
 )
@@ -25,7 +24,7 @@ func PrintSummary(outcome string, queue knowledge.Queue) {
 }
 
 // IsItGoingToHappen exports the internal function isItGoingToHappen
-func IsItGoingToHappen(ksource string, init state.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
+func IsItGoingToHappen(ksource string, init knowledge.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
 	kkk, err := knowledge.Load(ksource)
 	if err != nil {
 		return "", knowledge.Queue{}, err

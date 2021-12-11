@@ -4,8 +4,10 @@ package cmd
 import (
 	"io/ioutil"
 	"it/losangeles971/joshua/engine"
+	"it/losangeles971/joshua/knowledge"
+
 	log "github.com/sirupsen/logrus"
-	
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +16,6 @@ var dataFile string
 var success_name string
 var solutionFile string
 var maxCycles int
-var dotFile string
 
 // CLI command to apply knowledge
 var rootCmd = &cobra.Command{
@@ -28,7 +29,8 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		outcome, queue, err := engine.IsItGoingToHappen(string(source), nil, success_name, maxCycles)
+		s := knowledge.NewState(knowledge.WithYAML(dataFile))
+		outcome, queue, err := engine.IsItGoingToHappen(string(source), *s, success_name, maxCycles)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -52,7 +54,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&knowledgeFile, "knowledge", "k", "", "YAML file representing the knowledge")
 	rootCmd.Flags().StringVarP(&dataFile, "data", "d", "", "YAML file describing the problem")
 	rootCmd.Flags().StringVarP(&solutionFile, "output", "o", "", "YAML file to host the solution")
-	rootCmd.Flags().StringVarP(&dotFile, "dot", "d", "", "Graphwiz Dot file of the solution")
 	rootCmd.Flags().StringVarP(&success_name, "success", "s", "", "Name of success event")
 	rootCmd.Flags().IntVarP(&maxCycles, "max-cycles", "m", 100, "Maximum number of cycles (default 100)")
 	rootCmd.MarkFlagRequired("knowledge")
