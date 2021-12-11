@@ -4,7 +4,7 @@ package cmd
 import (
 	"io/ioutil"
 	"it/losangeles971/joshua/engine"
-	"log"
+	log "github.com/sirupsen/logrus"
 	
 	"github.com/spf13/cobra"
 )
