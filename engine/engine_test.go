@@ -3,7 +3,7 @@ package engine
 import (
 	"it/losangeles971/joshua/knowledge"
 	"it/losangeles971/joshua/state"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ The farmer, the wolf, the goat and the cabbage
 event(They are all on the est bank of the river) {
 	premises {
 	}
-	if {source
+	if {
 	  Farmer_location == 1;
 	  Wolf_location == 1;
 	  Goat_location == 1;
@@ -140,7 +140,7 @@ event(They are all on the est bank of the river) {
 	  Farmer_location = 0;
 	}
   }
-  `
+`
 
 func TestLogicReasoning(t *testing.T) {
 	s := state.NewSimpleState()

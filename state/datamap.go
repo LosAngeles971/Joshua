@@ -41,13 +41,17 @@ func WithMap(mm map[string]interface{}) SimpleStateOption {
 }
 
 // Create a new SimpleState with no variables
-func NewSimpleState() SimpleState {
+func NewSimpleState(opts ...SimpleStateOption) *SimpleState {
 	d := datamap{
 		Vars: map[string]interface{}{},
 	}
-	return SimpleState{
+	s := &SimpleState{
 		Data: &d,
 	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
 }
 
 func (s SimpleState) Add(name string, value interface{}) error {

@@ -7,20 +7,20 @@ processing the elements with a LIFO approach.
 */
 type Stack []*Path
 
-func (s *Stack) IsEmpty() bool {
+func (s *Stack) isEmpty() bool {
 	return len(*s) == 0
 }
 
-func (s *Stack) Size() int {
+func (s *Stack) size() int {
 	return len(*s)
 }
 
-func (s *Stack) Push(p *Path) {
+func (s *Stack) push(p *Path) {
 	*s = append(*s, p)
 }
 
-func (s *Stack) Pop() (*Path, bool) {
-	if s.IsEmpty() {
+func (s *Stack) pop() (*Path, bool) {
+	if s.isEmpty() {
 		return nil, false
 	} else {
 		index := len(*s) - 1

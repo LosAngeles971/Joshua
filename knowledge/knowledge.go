@@ -9,15 +9,16 @@ type Knowledge struct {
 	events []*Event
 }
 
+// Load compile a knowledge's source into a knowledge object
 func Load(source string) (Knowledge, error) {
 	var err error
 	kkk := Knowledge{}
-	kkk.events, err = Parse(source)
+	kkk.events, err = parse(source)
 	if err != nil {
 		return kkk, err
 	}
 	for _, event := range kkk.events {
-		err = event.SolveEffects(kkk.events)
+		err = event.solveEffects(kkk.events)
 		if err != nil {
 			return Knowledge{}, err
 		}
@@ -25,10 +26,10 @@ func Load(source string) (Knowledge, error) {
 	return kkk, nil
 }
 
-// return then given event
+// getEvent returns the event with the given id if it exists into the knowledge
 func (u Knowledge) GetEvent(id string) (*Event, bool) {
 	for _, e := range u.events {
-		if e.GetID() == id {
+		if e.getID() == id {
 			return e, true
 		}
 	}
@@ -53,10 +54,10 @@ func (k Knowledge) GetAllPathsToEvent(effect *Event) []*Path {
 	for _, cause := range k.WhoCause(*effect) {
 		p := createPath(cause, effect)
 		discovered = append(discovered, &p)
-		s.Push(&p)
+		s.push(&p)
 	}
-	for s.Size() > 0 {
-		p, ok := s.Pop()
+	for s.size() > 0 {
+		p, ok := s.pop()
 		if !ok {
 			return discovered
 		}

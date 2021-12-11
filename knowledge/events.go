@@ -19,6 +19,7 @@ import (
 	"it/losangeles971/joshua/state"
 
 	"github.com/Knetic/govaluate"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -68,7 +69,7 @@ type Event struct {
 	effects     []*Relationship                  // list of effects if the event occurs
 }
 
-func NewEvent(id string) Event {
+func newEvent(id string) Event {
 	return Event{
 		ID:          id,
 		premises:    []Assignment{},
@@ -78,7 +79,8 @@ func NewEvent(id string) Event {
 	}
 }
 
-func (event *Event) SolveEffects(kkk []*Event) error {
+// solveEffects resolves the event's effects starting from the names of the effects
+func (event *Event) solveEffects(kkk []*Event) error {
 	for _, effect := range event.effects {
 		ok := false
 		for _, target := range kkk {
@@ -94,18 +96,7 @@ func (event *Event) SolveEffects(kkk []*Event) error {
 	return nil
 }
 
-func (event *Event) AddPremises(exprs []string) error {
-	for _, expr := range exprs {
-		v, premise, err := math.ParseAssignment(expr)
-		if err != nil {
-			return err
-		}
-		event.premises = append(event.premises, Assignment{variable: v, expr: premise})
-	}
-	return nil
-}
-
-func (event *Event) AddConditions(exprs []string) error {
+func (event *Event) addConditions(exprs []string) error {
 	for _, expr := range exprs {
 		condition, err := math.ParseExpression(expr)
 		if err != nil {
@@ -116,7 +107,7 @@ func (event *Event) AddConditions(exprs []string) error {
 	return nil
 }
 
-func (event *Event) AddAssignments(exprs []string) error {
+func (event *Event) addAssignments(exprs []string) error {
 	for _, expr := range exprs {
 		v, a, err := math.ParseAssignment(expr)
 		if err != nil {
@@ -127,20 +118,19 @@ func (event *Event) AddAssignments(exprs []string) error {
 	return nil
 }
 
-func (event *Event) AddEffects(ee []*Relationship) {
+func (event *Event) addEffects(ee []*Relationship) {
 	event.effects = ee
 }
 
-func (f Event) GetID() string {
+func (f Event) getID() string {
 	return f.ID
 }
 
-// This function returns the weight of a specific cause-effect, betweem
-// the cause and the given effect (if the link exists)
+// GetWeightTo returns the weight of a specific cause-effect, between the cause and the given effect (if the link exists)
 func (e Event) GetWeightTo(effect *Event) float64 {
 	w := float64(0.0)
 	for _, ef := range e.effects {
-		if ef.Effect.GetID() == effect.GetID() {
+		if ef.Effect.getID() == effect.getID() {
 			w += ef.Weight
 		}
 	}
@@ -156,8 +146,8 @@ func find(a []string, i string) bool {
 	return false
 }
 
-// event is influenced by the event influencer, if the latter changes the value of at least one variable used by event's conditions
-func (event Event) IsInfluencedBy(influencer *Event) (bool, error) {
+// IsInfluencedBy returns true if the given influencer event changes the value of at least one variable used by event's conditions
+func (event Event) isInfluencedBy(influencer *Event) (bool, error) {
 	vars := []string{}
 	for _, a := range influencer.assignments {
 		vars = append(vars, a.variable)
@@ -175,6 +165,7 @@ func (event Event) IsInfluencedBy(influencer *Event) (bool, error) {
 	return false, nil
 }
 
+// IsValid returns false if the event does not have resolved effects
 func (event Event) IsValid() error {
 	for _, e := range event.effects {
 		if e.Effect == nil {
@@ -184,23 +175,27 @@ func (event Event) IsValid() error {
 	return nil
 }
 
-func (event Event) CanYouCauseThis(targetEvent Event) bool {
+// CanYouCauseThis returns true if the event can cause the given effect event
+func (event Event) CanYouCauseThis(effectEvent Event) bool {
 	for _, effect := range event.effects {
-		if effect.Effect.GetID() == targetEvent.GetID() && effect.GetWeight() > 0.0 {
+		if effect.Effect.getID() == effectEvent.getID() && effect.GetWeight() > 0.0 {
 			return true
 		}
 	}
 	return false
 }
 
+// Run executes event's assignements if the event's conditions are all true
 func (f *Event) Run(input state.State) (string, state.State, error) {
 	output := input.Clone()
 	for _, expr := range f.conditions {
+		log.Tracef("checking condition [%v] of event [%v]", expr, f.ID)
 		ok := math.IsComplete(expr, output)
 		if !ok {
 			return EVENT_OUTCOME_UNKNOWN, output, nil
 		}
 		result, err := expr.Evaluate(output.Translate())
+		log.Debugf("condition [%v] of event [%v] got result [%v] and error [%v]", expr, f.ID, result, err)
 		if err != nil {
 			return EVENT_OUTCOME_ERROR, output, err
 		}
@@ -213,11 +208,13 @@ func (f *Event) Run(input state.State) (string, state.State, error) {
 		}
 	}
 	for _, expr := range f.assignments {
+		log.Tracef("running assigment [%v] of event [%v]", expr, f.ID)
 		ok := math.IsComplete(expr.expr, output)
 		if !ok {
 			return EVENT_OUTCOME_UNKNOWN, output, nil
 		}
 		result, err := expr.expr.Evaluate(output.Translate())
+		log.Debugf("assignment [%v] of event [%v] got result [%v] and error [%v]", expr, f.ID, result, err)
 		if err != nil {
 			return EVENT_OUTCOME_ERROR, output, err
 		}

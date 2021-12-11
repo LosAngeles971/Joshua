@@ -19,18 +19,18 @@ func TestStack(t *testing.T) {
 	}
 	ss := []*Path{p1, p2, p3, p4}
 	s := Stack{}
-	s.Push(p1)
-	s.Push(p2)
-	s.Push(p3)
-	s.Push(p4)
-	if len(ss) != 4 || s.Size() != 4 {
+	s.push(p1)
+	s.push(p2)
+	s.push(p3)
+	s.push(p4)
+	if len(ss) != 4 || s.size() != 4 {
 		t.FailNow()
 	}
-	s.Pop()
-	s.Pop()
-	s.Pop()
-	s.Pop()
-	if len(ss) != 4 || s.Size() != 0 {
+	s.pop()
+	s.pop()
+	s.pop()
+	s.pop()
+	if len(ss) != 4 || s.size() != 0 {
 		t.FailNow()
 	}
 }

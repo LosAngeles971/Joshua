@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -11,11 +12,8 @@ type Queue struct {
 	Paths []*Path	`yaml:"queue"`
 }
 
-/* 
-This method serialize a queue of paths into a yaml.
-At the end of the reasoning process, the queue represents the found solution,
-thus this method can be used to save the solution as yaml string.
-*/
+// Serialize creates a YAML representation of the queue
+// This method is useful to print the final queue, the latter explains the reasoning
 func (q Queue) Serialize(clean bool) (string, error) {
 	qq := Queue{
 		Paths: []*Path{},
@@ -49,14 +47,16 @@ func (q Queue) Save(filename string) (error) {
 	return nil
 }
 
+// Size returns the number of Paths into the Queue
 func (q Queue) Size() (int) {
 	return len(q.Paths)
 }
 
-// This method clone an executed Path and put it into the queue
+// AddPath clones the given path in order to add it into the queue
 // Such situazion happens, when the state changed and the change makes
 // an already executed path applicable again
 func (q *Queue) AddPath(s *Path) (*Path) {
+	log.Trace("cloning path...")
 	n := s.clone()
 	for _, ss := range q.Paths {
 		if !ss.Executed && ss.equals(n) {
@@ -101,7 +101,7 @@ func (q *Queue) GetCycles() int {
 	return cycles
 }
 
-// This function choose the Path to check for solving the problem
+// Choose returns the current, best Path to the success event
 func (q Queue) Choose() (*Path) {
 	if len(q.Paths) < 1 {
 		return nil
@@ -113,7 +113,7 @@ func (q Queue) Choose() (*Path) {
 				x = i
 			}
 		} else {
-			if !p.Executed && p.GetWeight() > q.Paths[x].GetWeight() {
+			if !p.Executed && p.getWeight() > q.Paths[x].getWeight() {
 				x = i
 			}
 		}

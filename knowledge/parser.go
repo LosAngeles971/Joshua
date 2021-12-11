@@ -34,9 +34,10 @@ func getEffects(exprs []string) ([]*Relationship, []string, error) {
 	return ee, aa, nil
 }
 
+// parseEvent extracts an Event from the beginning of a string
 func parseEvent(name string, source string) (Event, string, error) {
 	var err error
-	e := NewEvent(name)
+	e := newEvent(name)
 	snippet, source, err := getBlock(clean(source))
 	if err != nil {
 		return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
@@ -57,12 +58,8 @@ func parseEvent(name string, source string) (Event, string, error) {
 			}
 			switch token {
 			case "premises":
-				err := e.AddPremises(exprs)
-				if err != nil {
-					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
-				}
 			case "if":
-				e.AddConditions(exprs)
+				e.addConditions(exprs)
 				if err != nil {
 					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
 				}
@@ -71,8 +68,8 @@ func parseEvent(name string, source string) (Event, string, error) {
 				if err != nil {
 					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
 				}
-				e.AddEffects(ee)
-				err = e.AddAssignments(aa)
+				e.addEffects(ee)
+				err = e.addAssignments(aa)
 				if err != nil {
 					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
 				}
@@ -84,7 +81,7 @@ func parseEvent(name string, source string) (Event, string, error) {
 	return e, source, nil
 }
 
-func Parse(source string) ([]*Event, error) {
+func parse(source string) ([]*Event, error) {
 	var err error
 	ee := []*Event{}
 	source = clean(source)

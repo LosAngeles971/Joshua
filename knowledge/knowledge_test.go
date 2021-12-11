@@ -234,7 +234,7 @@ func TestWhoCause(t *testing.T) {
 	for i := range CAUSES {
 		ok := false
 		for j := range causes {
-			if causes[j].GetID() == CAUSES[i] {
+			if causes[j].getID() == CAUSES[i] {
 				ok = true
 			}
 		}

@@ -17,14 +17,14 @@ var	EVENTS = []string{
 	}
 
 func TestParse(t *testing.T) {
-	ee, err := Parse(the_farmer)
+	ee, err := parse(the_farmer)
 	if err != nil {
 		t.Fatal(err)
 	}
 	for i := range EVENTS {
 		ok := false
 		for j := range ee {
-			if ee[j].GetID() == EVENTS[i] {
+			if ee[j].getID() == EVENTS[i] {
 				ok = true
 			}
 		}

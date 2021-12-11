@@ -15,12 +15,6 @@ func IsComplete(expr *govaluate.EvaluableExpression, data state.State) bool {
 			log.Printf("missing variabile %v from state", k)
 			return false
 		}
-		/*
-		if !vv.IsDefined() {
-			log.Printf("variabile %v of state is not defined", k)
-			return false
-		}
-		*/
 	}
 	return true
 }

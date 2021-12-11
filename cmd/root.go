@@ -4,7 +4,6 @@ package cmd
 import (
 	"io/ioutil"
 	"it/losangeles971/joshua/engine"
-	"it/losangeles971/joshua/outputs"
 	"log"
 	
 	"github.com/spf13/cobra"
@@ -40,12 +39,14 @@ var rootCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 		}
+		/*
 		if len(dotFile) > 0 {
 			err = outputs.SaveDot(queue, dotFile)
 			if err != nil {
 				log.Fatal(err)
 			}
 		}
+		*/
 	},
 }
 

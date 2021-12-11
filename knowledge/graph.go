@@ -3,6 +3,8 @@ package knowledge
 import (
 	"errors"
 	"it/losangeles971/joshua/state"
+
+	log "github.com/sirupsen/logrus"
 )
 
 /*
@@ -16,17 +18,17 @@ type Edge struct {
 }
 
 //e is influenced by ee if at least one event of ee is also an event of ee
-func (e Edge) IsInfluencedBy(ee *Edge) (bool, error) {
-	if ok, err := e.Cause.IsInfluencedBy(ee.Cause); ok || err != nil {
+func (e Edge) isInfluencedBy(ee *Edge) (bool, error) {
+	if ok, err := e.Cause.isInfluencedBy(ee.Cause); ok || err != nil {
 		return ok, err
 	}
-	if ok, err := e.Cause.IsInfluencedBy(ee.Effect); ok || err != nil {
+	if ok, err := e.Cause.isInfluencedBy(ee.Effect); ok || err != nil {
 		return ok, err
 	}
-	if ok, err := e.Effect.IsInfluencedBy(ee.Cause); ok || err != nil {
+	if ok, err := e.Effect.isInfluencedBy(ee.Cause); ok || err != nil {
 		return ok, err
 	}
-	if ok, err := e.Effect.IsInfluencedBy(ee.Effect); ok || err != nil {
+	if ok, err := e.Effect.isInfluencedBy(ee.Effect); ok || err != nil {
 		return ok, err
 	}
 	return false, nil
@@ -35,6 +37,7 @@ func (e Edge) IsInfluencedBy(ee *Edge) (bool, error) {
 // if cause ran successfully, then try to run then effect
 // note: if effect failed to occur, the changed applied by cause still remain
 func (e *Edge) Run(input state.State) (string, state.State, error) {
+	log.Debugf("checking the cause-effect between event %v and effect %v", e.Cause.ID, e.Effect.ID)
 	cause_outcome, cause_output, err := e.Cause.Run(input)
 	if err != nil {
 		return EFFECT_OUTCOME_ERROR, cause_output, err
@@ -58,11 +61,7 @@ func (e *Edge) Run(input state.State) (string, state.State, error) {
 	return EFFECT_OUTCOME_TRUE, effect_output, nil
 }
 
-/*
-A path is the concatenation of edges.
-From a cause-effect perspective, a path represents how one "source" event can cause a far "target" event,
-thorughout a chain of concatenated cause-effect events.
-*/
+// Path is a concatenation of edges, aka it is a chain of events tied by cause-effect relationshiop
 type Path struct {
 	Path 		[]*Edge			`yaml:"path"`
 	Executed 	bool			`yaml:"executed"`
@@ -93,17 +92,7 @@ func (p *Path) clone() *Path {
 	return &n
 }
 
-// Used by genetic library
-func (p *Path) GetOutcome() string {
-	return p.Outcome
-}
-
-// Used by genetic library a Path to not executed
-func (p *Path) Reset() {
-	p.Executed = false
-}
-
-func (p *Path) GetWeight() float64 {
+func (p *Path) getWeight() float64 {
 	w := float64(0.0)
 	for _, e := range p.Path {
 		w += e.Cause.GetWeightTo(e.Effect)
@@ -111,9 +100,9 @@ func (p *Path) GetWeight() float64 {
 	return w
 }
 
-func (p *Path) Contains(ee *Event) bool {
+func (p *Path) contains(ee *Event) bool {
 	for _, e := range p.Path {
-		if e.Cause.GetID() == ee.GetID() || e.Effect.GetID() == ee.GetID() {
+		if e.Cause.getID() == ee.getID() || e.Effect.getID() == ee.getID() {
 			return true
 		}
 	}
@@ -123,15 +112,15 @@ func (p *Path) Contains(ee *Event) bool {
 /*
 This method checks if given path starts with the receiver path
 */
-func (p *Path) IsPrefixOf(pp *Path) bool {
+func (p *Path) isPrefixOf(pp *Path) bool {
 	if len(p.Path) > len(pp.Path) {
 		return false
 	}
 	for i := range p.Path {
-		if p.Path[i].Cause.GetID() != pp.Path[i].Cause.GetID() {
+		if p.Path[i].Cause.getID() != pp.Path[i].Cause.getID() {
 			return false
 		}
-		if p.Path[i].Effect.GetID() != pp.Path[i].Effect.GetID() {
+		if p.Path[i].Effect.getID() != pp.Path[i].Effect.getID() {
 			return false
 		}
 	}
@@ -139,14 +128,14 @@ func (p *Path) IsPrefixOf(pp *Path) bool {
 }
 
 func (p *Path) equals(pp *Path) bool {
-	if p.IsPrefixOf(pp) && pp.IsPrefixOf(p) {
+	if p.isPrefixOf(pp) && pp.isPrefixOf(p) {
 		return true
 	}
 	return false
 }
 
 // This function run a path starting from a specific index
-func (p *Path) RunFromTail(input state.State, tail int) (error) {
+func (p *Path) runFromTail(input state.State, tail int) (error) {
 	for i := tail; i >= 0; i-- {
 		e := p.Path[i]
 		outcome, output, err := e.Run(input)
@@ -185,7 +174,7 @@ func (p *Path) Run(input state.State, cycle int) (error) {
 	p.Executed = true
 	p.Changed = false
 	for i := 0; i < len(p.Path); i++ {
-		err := p.RunFromTail(input, i)
+		err := p.runFromTail(input, i)
 		if err != nil {
 			return err
 		}
@@ -235,10 +224,10 @@ func getBranch(o *Path, e *Edge) Path {
 }
 
 // a paths is influenced by p if at least one of the s's edge is influenced by one of the p's edge
-func (s Path) IsInfluencedBy(p Path) (bool, error) {
+func (s Path) isInfluencedBy(p Path) (bool, error) {
 	for _, p_e := range p.Path {
 		for _, s_e := range s.Path {
-			if ok, err := s_e.IsInfluencedBy(p_e); ok || err != nil {
+			if ok, err := s_e.isInfluencedBy(p_e); ok || err != nil {
 				return ok, err
 			}
 		}
@@ -258,13 +247,13 @@ func backward(p *Path, k Knowledge, s *Stack) {
 		}
 		// If the cause is already into the Path, the Path ends here
 		// to avoid loops
-		if !p.Contains(cause) {
+		if !p.contains(cause) {
 			if i == 0 {
 				p.Path = append(p.Path, &e)
-				s.Push(p)
+				s.push(p)
 			} else {
 				b := getBranch(p, &e)
-				s.Push(&b)
+				s.push(&b)
 			}
 		}
 	}
