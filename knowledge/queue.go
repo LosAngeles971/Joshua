@@ -14,7 +14,7 @@ type Queue struct {
 
 // Serialize creates a YAML representation of the queue
 // This method is useful to print the final queue, the latter explains the reasoning
-func (q Queue) Serialize(clean bool) (string, error) {
+func (q Queue) Serialize() (string, error) {
 	qq := Queue{
 		Paths: []*Path{},
 	}
@@ -25,7 +25,7 @@ func (q Queue) Serialize(clean bool) (string, error) {
 			}
 		}
 	}
-	qq.SortByCycle()
+	qq.sortByCycle()
 	s, err := yaml.Marshal(&qq)
 	if err != nil {
 		return "", err
@@ -55,7 +55,7 @@ func (q Queue) Size() (int) {
 // AddPath clones the given path in order to add it into the queue
 // Such situazion happens, when the state changed and the change makes
 // an already executed path applicable again
-func (q *Queue) AddPath(s *Path) (*Path) {
+func (q *Queue) addPath(s *Path) (*Path) {
 	log.Trace("cloning path...")
 	n := s.clone()
 	for _, ss := range q.Paths {
@@ -75,7 +75,7 @@ In case the output of given path has been already reached by others,
 the given path can be considered a potential loop and it can be 
 discarderd even if it changed the state.
 */
-func (q Queue) CheckRecurrentOutput(e *Path) bool {
+func (q Queue) checkRecurrentOutput(e *Path) bool {
 	for _, s := range q.Paths {
 		if s.Executed && !s.equals(e) && e.Output.IsSubsetOf(s.Output) {
 			return true
@@ -84,7 +84,7 @@ func (q Queue) CheckRecurrentOutput(e *Path) bool {
 	return false
 }
 
-func (q *Queue) SortByCycle() {
+func (q *Queue) sortByCycle() {
 	sort.Slice(q.Paths, func(i, j int) bool {
 		return q.Paths[i].Cycle < q.Paths[j].Cycle
 	  })
@@ -102,7 +102,7 @@ func (q *Queue) GetCycles() int {
 }
 
 // Choose returns the current, best Path to the success event
-func (q Queue) Choose() (*Path) {
+func (q Queue) choose() (*Path) {
 	if len(q.Paths) < 1 {
 		return nil
 	}

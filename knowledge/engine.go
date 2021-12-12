@@ -15,12 +15,12 @@ func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (
 	cycles := 0
 	current := init.Clone()
 	for {
-		path := queue.Choose()
+		path := queue.choose()
 		if path == nil {
 			log.Debugf("chosen path from queue is nil -> exit with: %v", EFFECT_OUTCOME_EFFECT_FALSE)
 			return EFFECT_OUTCOME_EFFECT_FALSE, queue, nil
 		}
-		err := path.Run(*current, cycles)
+		err := path.run(*current, cycles)
 		if err != nil {
 			return EFFECT_OUTCOME_ERROR, queue, err
 		}
@@ -32,7 +32,7 @@ func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (
 			return EFFECT_OUTCOME_ERROR, queue, errors.New("executed path got an error")
 		case EFFECT_OUTCOME_UNKNOWN:
 			path.Executed = true
-			path.Outcome = EFFECT_OUTCOME_UNKNOWN 
+			path.Outcome = EFFECT_OUTCOME_UNKNOWN
 		case EFFECT_OUTCOME_NULL:
 			return EFFECT_OUTCOME_ERROR, queue, errors.New("executed path got no result")
 		case EFFECT_OUTCOME_TRUE:
@@ -42,8 +42,8 @@ func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (
 			// because it will never reach the desired effect neither it will change the context.
 			if path.Changed {
 				var pp Path = *path
-				if !queue.CheckRecurrentOutput(path) {
-					// Since the state changed the context by its cause, previous already executed states which are influenced by the 
+				if !queue.checkRecurrentOutput(path) {
+					// Since the state changed the context by its cause, previous already executed states which are influenced by the
 					// execution of this state must be cloned into the queue. This action makes sense only if the current state did not reached
 					// a context already reached by another state into the past.
 					for _, ppp := range queue.Paths {
@@ -53,7 +53,7 @@ func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (
 								return EFFECT_OUTCOME_ERROR, queue, err
 							}
 							if ok {
-								queue.AddPath(ppp)
+								queue.addPath(ppp)
 							}
 						}
 					}
@@ -61,7 +61,7 @@ func IsItGoingToHappen(k Knowledge, init State, effect *Event, max_cycles int) (
 					// clone of it into the queue, and update the current globate context.
 					// OPEN PROBLEM: should this action be execute outside of the if condition?
 					current = path.Output.Clone()
-					queue.AddPath(path)
+					queue.addPath(path)
 				} else {
 					// the state reached an already reached context into the past
 					// to avoid loopback, the state is not cloned into the queue

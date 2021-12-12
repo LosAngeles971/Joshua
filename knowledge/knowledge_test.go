@@ -8,7 +8,7 @@ const (
 	SUCCESS_EVENT = "They are all on the est bank of the river"
 )
 
-var	CAUSES = []string{
+var CAUSES = []string{
 	"The farmer brings the cabbage to the est bank of the river",
 	"The farmer brings the cabbage to the ovest bank of the river",
 	"The farmer brings the goat to the est bank of the river",
@@ -19,7 +19,7 @@ var	CAUSES = []string{
 	"The farmer comes back to the ovest bank of the river",
 }
 
-var the_farmer =` 
+var the_farmer = ` 
 /*
 The farmer, the wolf, the goat and the cabbage
 */
@@ -154,7 +154,7 @@ event(They are all on the est bank of the river) {
   }
   `
 
-  var test_graph = `
+var test_graph = `
 /*
   # A->E->A->B->C->Z
   # C->D->Z
@@ -255,15 +255,12 @@ func TestBranch(t *testing.T) {
 	}
 	e_e, _ := k.GetEvent("E")
 	e_f, _ := k.GetEvent("F")
-	p1 := &Path{
-		Path: []*Edge{
-			&Edge{Cause: e_f, Effect: success,},
-		},
-	}
+	edge_0 := &Edge{Cause: e_f, Effect: success}
+	p1 := &Path{Path: []*Edge{edge_0}}
 	edge_1 := Edge{
-		Cause: e_e,
+		Cause:  e_e,
 		Effect: e_f,
-	} 
+	}
 	p2 := getBranch(p1, &edge_1)
 	if len(p1.Path) != 1 {
 		t.Fatal("Corrupted p1")
@@ -288,26 +285,32 @@ func TestAllPaths(t *testing.T) {
 	e_d, _ := k.GetEvent("D")
 	e_e, _ := k.GetEvent("E")
 	e_f, _ := k.GetEvent("F")
-	p1 := &Path{
-		Path: []*Edge{
-			&Edge{Cause: e_f, Effect: e_z,},
-		},
-	}
+	edge_0 := &Edge{Cause: e_f, Effect: e_z}
+	p1 := &Path{Path: []*Edge{edge_0}}
+	edge_1 := &Edge{Cause: e_c, Effect: e_z}
+	edge_2 := &Edge{Cause: e_b, Effect: e_c}
+	edge_3 := &Edge{Cause: e_a, Effect: e_b}
+	edge_4 := &Edge{Cause: e_e, Effect: e_a}
 	p2 := &Path{
 		Path: []*Edge{
-			&Edge{Cause: e_c, Effect: e_z,},
-			&Edge{Cause: e_b, Effect: e_c,},
-			&Edge{Cause: e_a, Effect: e_b,},
-			&Edge{Cause: e_e, Effect: e_a,},
+			edge_1,
+			edge_2,
+			edge_3,
+			edge_4,
 		},
 	}
+	edge_5 := &Edge{Cause: e_d, Effect: e_z}
+	edge_6 := &Edge{Cause: e_c, Effect: e_d}
+	edge_7 := &Edge{Cause: e_b, Effect: e_c}
+	edge_8 := &Edge{Cause: e_a, Effect: e_b}
+	edge_9 := &Edge{Cause: e_e, Effect: e_a}
 	p3 := &Path{
 		Path: []*Edge{
-			&Edge{Cause: e_d, Effect: e_z,},
-			&Edge{Cause: e_c, Effect: e_d,},
-			&Edge{Cause: e_b, Effect: e_c,},
-			&Edge{Cause: e_a, Effect: e_b,},
-			&Edge{Cause: e_e, Effect: e_a,},
+			edge_5,
+			edge_6,
+			edge_7,
+			edge_8,
+			edge_9,
 		},
 	}
 	allPaths := k.GetAllPathsToEvent(e_z)

@@ -35,7 +35,7 @@ func (e Edge) isInfluencedBy(ee *Edge) (bool, error) {
 
 // if cause ran successfully, then try to run then effect
 // note: if effect failed to occur, the changed applied by cause still remain
-func (e *Edge) Run(input State) (string, State, error) {
+func (e *Edge) run(input State) (string, State, error) {
 	log.Debugf("checking the cause-effect between event %v and effect %v", e.Cause.ID, e.Effect.ID)
 	cause_outcome, cause_output, err := e.Cause.Run(input)
 	if err != nil {
@@ -137,7 +137,7 @@ func (p *Path) equals(pp *Path) bool {
 func (p *Path) runFromTail(input State, tail int) error {
 	for i := tail; i >= 0; i-- {
 		e := p.Path[i]
-		outcome, output, err := e.Run(input)
+		outcome, output, err := e.run(input)
 		if err != nil {
 			e.Outcome = EFFECT_OUTCOME_ERROR
 			return err
@@ -164,7 +164,7 @@ The verification must got for attempts:
 - ...
 - if not the first - n, first - n -1, ..., the the first
 */
-func (p *Path) Run(input State, cycle int) error {
+func (p *Path) run(input State, cycle int) error {
 	p.Cycle = cycle
 	if p.Executed {
 		return errors.New("asked to run an already executed state")

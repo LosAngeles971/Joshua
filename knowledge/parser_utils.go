@@ -6,12 +6,14 @@ import (
 	"strings"
 )
 
+// clean returns a string removing carriage returns from the given string
 func clean(source string) string {
 	source = strings.Replace(source, "\n", "", -1)
 	source = strings.Replace(source, "\t", "", -1)
 	return strings.TrimSpace(source)
 }
 
+// readUntil get the first chars from the given string till to the stop sequence
 func readUntil(source string, stop string) (string, string, error) {
 	token := ""
 	source = clean(source)
@@ -27,6 +29,7 @@ func readUntil(source string, stop string) (string, string, error) {
 	}
 }
 
+// getExpressions returns the list of expressions from a snippet
 func getExpressions(snippet string) ([]string, error) {
 	var err error
 	snippet = clean(snippet)

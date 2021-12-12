@@ -158,7 +158,7 @@ func TestLogicReasoning(t *testing.T) {
 		t.Fatalf("exepected outcome [%v] not [%v]", knowledge.EFFECT_OUTCOME_TRUE, outcome)
 	}
 	PrintSummary(outcome, solution)
-	y, err := solution.Serialize(true)
+	y, err := solution.Serialize()
 	if err != nil {
 		t.Fatal(err)
 	}
