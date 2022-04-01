@@ -7,21 +7,17 @@ type Knowledge struct {
 	events []*Event
 }
 
-// Load compile a knowledge's source into a knowledge object
-func Load(source string) (Knowledge, error) {
-	var err error
-	kkk := Knowledge{}
-	kkk.events, err = parse(source)
-	if err != nil {
-		return kkk, err
+func NewKnowledge(events []*Event) (Knowledge, error) {
+	k := Knowledge{
+		events: events,
 	}
-	for _, event := range kkk.events {
-		err = event.solveEffects(kkk.events)
+	for _, event := range k.events {
+		err := event.solveEffects(k.events)
 		if err != nil {
 			return Knowledge{}, err
 		}
 	}
-	return kkk, nil
+	return k, nil
 }
 
 // getEvent returns the event with the given id if it exists into the knowledge

@@ -6,12 +6,7 @@ import (
 	"strings"
 )
 
-// clean returns a string removing carriage returns from the given string
-func clean(source string) string {
-	source = strings.Replace(source, "\n", "", -1)
-	source = strings.Replace(source, "\t", "", -1)
-	return strings.TrimSpace(source)
-}
+
 
 // readUntil get the first chars from the given string till to the stop sequence
 func readUntil(source string, stop string) (string, string, error) {

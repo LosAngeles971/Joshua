@@ -12,7 +12,19 @@ const (
 	STATE_EVENT_NAME_OPEN = 2
 )
 
-func getEffects(exprs []string) ([]*Relationship, []string, error) {
+type Parser struct {
+	start_comment string
+	end_comment string
+}
+
+func newParser() *Parser {
+	return &Parser{
+		start_comment: "/*",
+		end_comment: "*/",
+	}
+}
+
+func (p *Parser) getEffects(exprs []string) ([]*Relationship, []string, error) {
 	ee := []*Relationship{}
 	aa := []string{}
 	for _, expr := range exprs {
@@ -35,7 +47,7 @@ func getEffects(exprs []string) ([]*Relationship, []string, error) {
 }
 
 // parseEvent extracts an Event from the beginning of a string
-func parseEvent(name string, source string) (Event, string, error) {
+func (p *Parser) parseEvent(name string, source string) (Event, string, error) {
 	var err error
 	e := newEvent(name)
 	snippet, source, err := getBlock(clean(source))
@@ -64,7 +76,7 @@ func parseEvent(name string, source string) (Event, string, error) {
 					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
 				}
 			case "then":
-				ee, aa, err := getEffects(exprs)
+				ee, aa, err := p.getEffects(exprs)
 				if err != nil {
 					return e, source, fmt.Errorf("failed parsing event %v -> %v", name, err)
 				}
@@ -81,7 +93,8 @@ func parseEvent(name string, source string) (Event, string, error) {
 	return e, source, nil
 }
 
-func parse(source string) ([]*Event, error) {
+// parse is the main function of this file, it converts a source into an array of events
+func (p *Parser) parse(source string) ([]*Event, error) {
 	var err error
 	ee := []*Event{}
 	source = clean(source)
@@ -90,8 +103,8 @@ func parse(source string) ([]*Event, error) {
 		if l0 == 0 {
 			return ee, nil
 		}
-		if strings.HasPrefix(source, "/*") {
-			_, source, err = readUntil(source, "*/")
+		if strings.HasPrefix(source, p.start_comment) {
+			_, source, err = readUntil(source, p.end_comment)
 			if err != nil {
 				return ee, err
 			}
@@ -103,7 +116,7 @@ func parse(source string) ([]*Event, error) {
 				return ee, err
 			}
 			var e Event
-			e, source, err = parseEvent(name, source)
+			e, source, err = p.parseEvent(name, source)
 			if err != nil {
 				return ee, err
 			}

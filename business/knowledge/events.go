@@ -35,46 +35,45 @@ const (
 	EFFECT_OUTCOME_LOOP         = "true but loop"
 )
 
-// A relationship represents the cause-effect binding between two events
-type Relationship struct {
-	Indirect string  // name of the effect's event
-	Weight   float64 // if the cause's event occurr there is a "weight" probability that the effect occurs
-	Effect   *Event  // effect's event
-}
-
-func (r Relationship) GetWeight() float64 {
-	if r.Weight > 1.0 {
-		return 1.0
-	}
-	if r.Weight < 0.0 {
-		return 0.0
-	}
-	return r.Weight
-}
-
-// Assignment sets a value to a variabile, as a consequence of the owner event's occurrence
-type Assignment struct {
-	variable string
-	expr     *govaluate.EvaluableExpression
-}
-
 // Event includes all attribute of an event
 type Event struct {
 	ID          string                           `yaml:"id"`
-	premises    []Assignment                     // currently unused
 	conditions  []*govaluate.EvaluableExpression // list of equivalences used to evaluate if an event can occur
 	assignments []Assignment                     // list of assignments executed if an event occurs
 	effects     []*Relationship                  // list of effects if the event occurs
 }
 
-func newEvent(id string) Event {
-	return Event{
+type EventOption func(*Event)
+
+func WithConditions(c []*govaluate.EvaluableExpression) EventOption {
+	return func(e *Event) {
+		e.conditions = c
+	}
+}
+
+func WithAssignments(a []Assignment) EventOption {
+	return func(e *Event) {
+		e.assignments = a
+	}
+}
+
+func WithRelationships(r []*Relationship) EventOption {
+	return func(e *Event) {
+		e.effects = r
+	}
+}
+
+func NewEvent(id string, opts ...EventOption) *Event {
+	e := &Event{
 		ID:          id,
-		premises:    []Assignment{},
 		conditions:  []*govaluate.EvaluableExpression{},
 		assignments: []Assignment{},
 		effects:     []*Relationship{},
 	}
+	for _, opt := range opts {
+		opt(e)
+	}
+	return e
 }
 
 // solveEffects resolves the event's effects starting from the names of the effects
@@ -82,36 +81,14 @@ func (event *Event) solveEffects(kkk []*Event) error {
 	for _, effect := range event.effects {
 		ok := false
 		for _, target := range kkk {
-			if target.ID == effect.Indirect {
+			if target.ID == effect.Name {
 				effect.Effect = target
 				ok = true
 			}
 		}
 		if !ok {
-			return fmt.Errorf("effect %v of event %v does not exist", effect.Indirect, event.ID)
+			return fmt.Errorf("effect %v of event %v does not exist", effect.Name, event.ID)
 		}
-	}
-	return nil
-}
-
-func (event *Event) addConditions(exprs []string) error {
-	for _, expr := range exprs {
-		condition, err := parseExpression(expr)
-		if err != nil {
-			return err
-		}
-		event.conditions = append(event.conditions, condition)
-	}
-	return nil
-}
-
-func (event *Event) addAssignments(exprs []string) error {
-	for _, expr := range exprs {
-		v, a, err := parseAssignment(expr)
-		if err != nil {
-			return err
-		}
-		event.assignments = append(event.assignments, Assignment{variable: v, expr: a})
 	}
 	return nil
 }
@@ -167,7 +144,7 @@ func (event Event) isInfluencedBy(influencer *Event) (bool, error) {
 func (event Event) IsValid() error {
 	for _, e := range event.effects {
 		if e.Effect == nil {
-			return fmt.Errorf("event %v has the undefined effect %v", event.ID, e.Indirect)
+			return fmt.Errorf("event %v has the undefined effect %v", event.ID, e.Name)
 		}
 	}
 	return nil
@@ -188,8 +165,7 @@ func (f *Event) Run(input State) (string, State, error) {
 	output := input.Clone()
 	for _, expr := range f.conditions {
 		log.Tracef("checking condition [%v] of event [%v]", expr, f.ID)
-		ok := isComplete(expr, *output)
-		if !ok {
+		if !output.AreDefined(expr.Vars()) {
 			return EVENT_OUTCOME_UNKNOWN, *output, nil
 		}
 		result, err := expr.Evaluate(output.Translate())
@@ -207,8 +183,7 @@ func (f *Event) Run(input State) (string, State, error) {
 	}
 	for _, expr := range f.assignments {
 		log.Tracef("running assigment [%v] of event [%v]", expr, f.ID)
-		ok := isComplete(expr.expr, *output)
-		if !ok {
+		if !output.AreDefined(expr.expr.Vars()) {
 			return EVENT_OUTCOME_UNKNOWN, *output, nil
 		}
 		result, err := expr.expr.Evaluate(output.Translate())

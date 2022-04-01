@@ -8,7 +8,8 @@ package engine
 
 import (
 	"fmt"
-	"it/losangeles971/joshua/knowledge"
+	"it/losangeles971/joshua/business/parser"
+	"it/losangeles971/joshua/business/knowledge"
 	"os"
 	"text/tabwriter"
 )
@@ -23,9 +24,19 @@ func PrintSummary(outcome string, queue knowledge.Queue) {
 	w.Flush()
 }
 
+// Load compile a knowledge's source into a knowledge object
+func load(source string) (knowledge.Knowledge, error) {
+	p := parser.NewParser(source)
+	events, err := p.Parse()
+	if err != nil {
+		return knowledge.Knowledge{}, err
+	}
+	return knowledge.NewKnowledge(events)
+}
+
 // IsItGoingToHappen exports the internal function isItGoingToHappen
-func IsItGoingToHappen(ksource string, init knowledge.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
-	kkk, err := knowledge.Load(ksource)
+func IsItGoingToHappen(source string, init knowledge.State, effect string, max_cycles int) (string, knowledge.Queue, error) {
+	kkk, err := load(source)
 	if err != nil {
 		return "", knowledge.Queue{}, err
 	}

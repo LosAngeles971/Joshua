@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestDatamapCreation(t *testing.T) {
+func TestCreationAndUpdate(t *testing.T) {
 	data := map[string]float64{
 		"A": 1.0,
 		"B": 2.0,

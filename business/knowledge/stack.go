@@ -1,10 +1,10 @@
+/*
+This file provides functions to handle a Stack,
+that is a LIFO queue of Path.
+*/
 package knowledge
 
-/*
-Stack implements a stack data structure of Path.
-It is useful to check a set of possible paths,
-processing the elements with a LIFO approach.
-*/
+
 type Stack []*Path
 
 func (s *Stack) isEmpty() bool {

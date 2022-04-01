@@ -1,6 +1,5 @@
 /*
-Datamap is a really simple implementation of the state's interface, since it is just a map of interfaces,
-where every tuple (k,v) is a variable.
+This file provides capabilities to handle states for Joshua programs.
 */
 package knowledge
 
@@ -12,13 +11,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// State is a map of current values of all defined variables
+// A state is a map of values.
 type State struct {
 	Vars map[string]interface{} `yaml:"vars"`
 }
 
 type StateOption func(*State)
 
+// WithYAML loads the state from a YAML file
 func WithYAML(filename string) StateOption {
 	return func(s *State) {
 		in, err := ioutil.ReadFile(filename)
@@ -33,6 +33,7 @@ func WithYAML(filename string) StateOption {
 	}
 }
 
+// WithJSON loads the state from a YAML file
 func WithJSON(filename string) StateOption {
 	return func(s *State) {
 		in, err := ioutil.ReadFile(filename)
@@ -47,6 +48,7 @@ func WithJSON(filename string) StateOption {
 	}
 }
 
+// WithMap loads the state from a given map
 func WithMap(mm map[string]interface{}) StateOption {
 	return func(s *State) {
 		for k, v := range mm {
@@ -55,7 +57,7 @@ func WithMap(mm map[string]interface{}) StateOption {
 	}
 }
 
-// Create a new SimpleState with no variables
+// Create a new state
 func NewState(opts ...StateOption) *State {
 	s := &State{
 		Vars: map[string]interface{}{},
@@ -85,7 +87,7 @@ func (s State) Get(name string) (interface{}, bool) {
 	return v, ok
 }
 
-// check if child is a "pure" subset of father
+// IsSubsetOf checks if the state is a subset of the given state
 func (child State) IsSubsetOf(father State) bool {
 	for name, value := range child.Vars {
 		vv, ok := father.Get(name)
@@ -111,6 +113,17 @@ func (s State) Clone() *State {
 	return clone
 }
 
+// Translate converts the state into a map
 func (s State) Translate() map[string]interface{} {
 	return s.Vars
+}
+
+func (s State) AreDefined(vv []string) bool {
+	for i := range vv {
+		_, ok := s.Get(vv[i])
+		if !ok {
+			return false
+		}
+	}
+	return true
 }
