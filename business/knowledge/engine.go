@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"text/tabwriter"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -20,11 +21,11 @@ type Solution struct {
 }
 
 type Engine struct {
-	kkk Knowledge
+	kkk       Knowledge
 }
 
-func NewEngine(source string) (Engine, error) {
-	kkk, err := NewKnowledge(WithSource(source), WithMaxCycles(500))
+func NewEngine(source string, maxCycles int) (Engine, error) {
+	kkk, err := NewKnowledge(WithSource(source), WithMaxCycles(maxCycles))
 	if err != nil {
 		return Engine{}, err
 	}
@@ -36,8 +37,8 @@ func NewEngine(source string) (Engine, error) {
 func NewSolution(o string, q Queue, e error) Solution {
 	return Solution{
 		Outcome: o,
-		Chain: q,
-		Err: e,
+		Chain:   q,
+		Err:     e,
 	}
 }
 

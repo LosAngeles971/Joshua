@@ -26,8 +26,21 @@ The software is available for download at the link:
 
 [source, shell]
 ----
-joshua.exe solve -k k_contadino.yml -p p_contadino.yml -m 50 --queuelog
-$ ./joshua.exe solve -k ../resources/k_contadino.yml -p ../resources/p_contadino.yml -m 50 --queuelog
+$ ./joshua.exe -d .resources/thefarmer.yml -k .resources/thefarmer.joshua -s "They are all on the est bank of the river"
+   Cycle|                                                          Cause|                                      Effect|               Outcome|
+      13|   The farmer brings the cabbage to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+       1|        The farmer brings the goat to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      22|      The farmer brings the goat to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+       6|           The farmer comes back to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+       7|     The farmer brings the cabbage to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      14|     The farmer brings the cabbage to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      16|        The farmer brings the wolf to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      23|     The farmer brings the cabbage to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      28|           The farmer comes back to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+      30|        The farmer brings the goat to the est bank of the river|   They are all on the est bank of the river|                  true|
+        Outcome|   true|
+         Cycles|     30|
+   Queue's size|     37|
 ----
 
 

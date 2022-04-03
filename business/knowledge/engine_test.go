@@ -10,7 +10,7 @@ func TestLogicReasoning(t *testing.T) {
 	s.Add("Wolf_location", 0.0)
 	s.Add("Goat_location", 0.0)
 	s.Add("Cabbage_location", 0.0)
-	engine, err := NewEngine(thefarmer)
+	engine, err := NewEngine(thefarmer, 100)
 	if err != nil {
 		t.Fatal(err)
 	}

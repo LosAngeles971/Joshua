@@ -1,8 +1,41 @@
 package knowledge
 
 import (
+	_ "embed"
 	"testing"
 )
+
+//go:embed thefarmer.yml
+var test_data1 string
+//go:embed thefarmer.json
+var test_data2 string
+
+func TestLoad(t *testing.T) {
+	s1 := NewState(WithData([]byte(test_data1), ENC_YAML))
+	s2 := NewState(WithData([]byte(test_data2), ENC_JSON))
+	expected := map[string]int{
+		"Farmer_location": 0,
+  		"Wolf_location": 0,
+  		"Goat_location": 0,
+  		"Cabbage_location": 0,
+	}
+	for name, value := range expected {
+		v1, ok1 := s1.Get(name)
+		v2, ok2 := s2.Get(name)
+		if !ok1 {
+			t.Errorf("s1: variable %s is missing", name)
+		}
+		if !ok2 {
+			t.Errorf("s2: variable %s is missing", name)
+		}
+		if ok1 && v1.(int) != value {
+			t.Errorf("s1: variable %s got %v not %v", name, v1, value)
+		}
+		if ok2 && v2.(float64) != float64(value) {
+			t.Errorf("s2: variable %s got %v not %v", name, v2, value)
+		}
+	}
+}
 
 func TestCreationAndUpdate(t *testing.T) {
 	data := map[string]float64{

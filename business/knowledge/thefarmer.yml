@@ -1,0 +1,6 @@
+---
+  vars:
+    Farmer_location: 0
+    Wolf_location: 0
+    Goat_location: 0
+    Cabbage_location: 0

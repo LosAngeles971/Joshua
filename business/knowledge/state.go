@@ -6,9 +6,13 @@ package knowledge
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 
 	"gopkg.in/yaml.v3"
+)
+
+const (
+	ENC_JSON = 0
+	ENC_YAML = 1
 )
 
 // A state is a map of values.
@@ -18,30 +22,18 @@ type State struct {
 
 type StateOption func(*State)
 
-// WithYAML loads the state from a YAML file
-func WithYAML(filename string) StateOption {
+func WithData(data []byte, enc int) StateOption {
 	return func(s *State) {
-		in, err := ioutil.ReadFile(filename)
+		ss := State{}
+		var err error
+		if enc == ENC_JSON {
+			err = json.Unmarshal(data, &ss)
+		} else {
+			err = yaml.Unmarshal(data, &ss)
+		}
 		if err != nil {
 			return
 		}
-		ss := State{}
-		yaml.Unmarshal(in, &ss)
-		for k, v := range ss.Vars {
-			s.Vars[k] = v
-		}
-	}
-}
-
-// WithJSON loads the state from a YAML file
-func WithJSON(filename string) StateOption {
-	return func(s *State) {
-		in, err := ioutil.ReadFile(filename)
-		if err != nil {
-			return
-		}
-		ss := State{}
-		json.Unmarshal(in, &ss)
 		for k, v := range ss.Vars {
 			s.Vars[k] = v
 		}
