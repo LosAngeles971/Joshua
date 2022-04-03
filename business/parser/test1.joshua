@@ -1,0 +1,12 @@
+/*
+The farmer, the wolf, the goat and the cabbage
+*/
+
+event(They are all on the est bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "Wolf_location == 1"
+	}
+	then {
+	}
+}

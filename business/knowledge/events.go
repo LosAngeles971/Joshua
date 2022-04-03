@@ -93,8 +93,16 @@ func (event *Event) solveEffects(kkk []*Event) error {
 	return nil
 }
 
-func (event *Event) addEffects(ee []*Relationship) {
-	event.effects = ee
+func (event *Event) AddCondition(cc *govaluate.EvaluableExpression) {
+	event.conditions = append(event.conditions, cc)
+}
+
+func (event *Event) AddAssigment(aa Assignment) {
+	event.assignments = append(event.assignments, aa)
+}
+
+func (event *Event) AddEffect(ee *Relationship) {
+	event.effects = append(event.effects, ee)
 }
 
 func (f Event) getID() string {
