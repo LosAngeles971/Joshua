@@ -3,7 +3,7 @@ The farmer, the wolf, the goat and the cabbage
 */
 
   event(They are all on the est bank of the river) {
-	if {source
+	if {
 	  "Farmer_location == 1"
 	  "Wolf_location == 1"
 	  "Goat_location == 1"
@@ -26,7 +26,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Cabbage_location = 1"
 	}
     effects {
-        (They are all on the est bank of the river, 0.5)
+        ("They are all on the est bank of the river", 0.5)
     }
   }
   
@@ -41,7 +41,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Cabbage_location = 0"
 	}
     effects {
-        (They are all on the est bank of the river, 0.1)
+        ("They are all on the est bank of the river", 0.1)
     }
   }
   
@@ -55,7 +55,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Goat_location = 1"
 	}
     effects {
-        (They are all on the est bank of the river, 0.5)
+        ("They are all on the est bank of the river", 0.5)
     }
   }
   
@@ -69,7 +69,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Goat_location = 0"
 	}
     effects {
-        (They are all on the est bank of the river, 0.1)
+        ("They are all on the est bank of the river", 0.1)
     }
   }
   
@@ -84,7 +84,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Wolf_location = 1"
 	}
     effects {
-        (They are all on the est bank of the river, 0.5)
+        ("They are all on the est bank of the river", 0.5)
     }
   }
   
@@ -99,7 +99,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Wolf_location = 0"
 	}
     effects {
-        (They are all on the est bank of the river, 0.1)
+        ("They are all on the est bank of the river", 0.1)
     }
   }
   
@@ -113,7 +113,7 @@ The farmer, the wolf, the goat and the cabbage
 	  "Farmer_location = 1"
 	}
     effects {
-        (They are all on the est bank of the river, 0.3)
+        ("They are all on the est bank of the river", 0.3)
     }
   }
   
@@ -124,9 +124,9 @@ The farmer, the wolf, the goat and the cabbage
 	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
 	}
 	then {
-	  Farmer_location = 0;
+	  "Farmer_location = 0"
 	}
     effects {
-        (They are all on the est bank of the river, 0.3)
+        ("They are all on the est bank of the river", 0.3)
     }
   }

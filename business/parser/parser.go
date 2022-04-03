@@ -10,10 +10,33 @@ import (
 //go:embed joshua.yml
 var joshua string
 
+type EventCode struct {
+	name        string
+	conditions  []string
+	assignments []string
+	effects     []string
+}
+
+func (code EventCode) Name() string {
+	return code.name
+}
+
+func (code EventCode) GetConditions() []string {
+	return code.conditions
+}
+
+func (code EventCode) GetAssignments() []string {
+	return code.assignments
+}
+
+func (code EventCode) GetEffects() []string {
+	return code.effects
+}
+
 type Parser struct {
 	Lib   []FSM `yaml:"automata"`
 	lexer *Lexer
-	code  []EventCode
+	code  []*EventCode
 }
 
 func NewParser(l *Lexer) (*Parser, error) {
@@ -22,14 +45,14 @@ func NewParser(l *Lexer) (*Parser, error) {
 	}
 	fsm := &Parser{
 		lexer: l,
-		code:  []EventCode{},
+		code:  []*EventCode{},
 	}
 	err := yaml.Unmarshal([]byte(joshua), fsm)
 	return fsm, err
 }
 
 func (p *Parser) setCodeName(name string) {
-	p.code = append(p.code, EventCode{name: name})
+	p.code = append(p.code, &EventCode{name: name})
 }
 
 func (p *Parser) addIf(expr string) {
@@ -57,15 +80,15 @@ func (p *Parser) getFSM(id string) (FSM, error) {
 }
 
 func (p *Parser) process(fsmID string) error {
-	fsm, err := p.getFSM(fsmID)
-	if err != nil {
-		return err
+	fsm, err1 := p.getFSM(fsmID)
+	if err1 != nil {
+		return err1
 	}
 	for i, trx := range fsm.Transitions {
 		if trx.Action == call_action {
-			sub, err := p.getFSM(trx.Sub)
-			if err != nil {
-				return err
+			sub, err2 := p.getFSM(trx.Sub)
+			if err2 != nil {
+				return err2
 			}
 			count := 0
 			keepgoing := true
@@ -77,20 +100,21 @@ func (p *Parser) process(fsmID string) error {
 						return fmt.Errorf("FSM [%s][%v] -> expected at least one [%v]", fsm.ID, i, trx.Sub)
 					}
 				} else {
-					nextToken, err := p.lexer.readToken()
-					if err != nil {
-						return err
+					nextToken, err3 := p.lexer.readToken()
+					if err3 != nil {
+						return err3
 					}
-					yes, err := sub.isApplicable(nextToken)
-					if err != nil {
-						return err
+					yes, err4 := sub.isApplicable(nextToken)
+					if err4 != nil {
+						return err4
 					}
 					if yes {
-						err := p.process(trx.Sub)
-						if err != nil {
-							return err
+						err5 := p.process(trx.Sub)
+						if err5 != nil {
+							return err5
+						} else {
+							count++
 						}
-						count++
 					} else {
 						if count >= trx.Min {
 							keepgoing = false
@@ -125,7 +149,7 @@ func (p *Parser) process(fsmID string) error {
 				if token.id == text_token {
 					p.addThen(token.value)
 				}
-			case "thenevent":
+			case "effectexpression":
 				if token.id == text_token {
 					p.addEffect(token.value)
 				}
@@ -135,9 +159,13 @@ func (p *Parser) process(fsmID string) error {
 	return nil
 }
 
-func (p *Parser) Parse() error {
+func (p *Parser) Parse() ([]*EventCode, error) {
 	if p.lexer.isEmpty() {
-		return nil
+		return nil, nil
 	}
-	return p.process("body")
+	err := p.process("body")
+	if err != nil {
+		return nil, err
+	}
+	return p.code, nil
 }

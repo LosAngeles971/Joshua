@@ -1,6 +1,7 @@
 package knowledge
 
 import (
+	_ "embed"
 	"testing"
 )
 
@@ -19,76 +20,11 @@ var CAUSES = []string{
 	"The farmer comes back to the ovest bank of the river",
 }
 
-var the_farmer = ` 
-
-  `
-
-var test_graph = `
-/*
-  # A->E->A->B->C->Z
-  # C->D->Z
-  # F->Z
-*/
-
-event(Z) {
-	premises {}
-	if {}
-	then {}
-  }
-  
-  event(A) {
-	premises {}
-	if {}
-	then {
-	  event(B, 1.0);
-	  event(E, 1.0);
-	}
-  }
-  
-  event(B) {
-	premises {}
-	if {}
-	then {
-	  event(C, 1.0);
-	}
-  }
-  
-  event(C) {
-	premises {}
-	if {}
-	then {
-	  event(Z, 1.0);
-	  event(D, 1.0);
-	}
-  }
-  
-  event(D) {
-	premises {}
-	if {}
-	then {
-	  event(Z, 1.0);
-	}
-  }
-  
-  event(E) {
-	premises {}
-	if {}
-	then {
-	  event(A, 1.0);
-	}
-  }
-  
-  event(F) {
-	premises {}
-	if {}
-	then {
-	  event(Z, 1.0);
-	}
-  }
-  `
+//go:embed testgraph.joshua
+var test_graph string
 
 func TestWhoCause(t *testing.T) {
-	k, err := Load(the_farmer)
+	k, err := NewKnowledge(WithSource(thefarmer))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,7 +50,10 @@ func TestWhoCause(t *testing.T) {
 }
 
 func TestBranch(t *testing.T) {
-	k, err := Load(test_graph)
+	k, err := NewKnowledge(WithSource(test_graph))
+	if err != nil {
+		t.Fatal(err)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +79,7 @@ func TestBranch(t *testing.T) {
 }
 
 func TestAllPaths(t *testing.T) {
-	k, err := Load(test_graph)
+	k, err := NewKnowledge(WithSource(test_graph))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,9 +1,13 @@
 package knowledge
 
 import (
+	_ "embed"
 	"fmt"
 	"testing"
 )
+
+//go:embed testevents.joshua
+var test_events string
 
 /*
 This test verifies the functionalities of:
@@ -11,15 +15,20 @@ This test verifies the functionalities of:
 - assignements execution
 */
 func TestEvents(t *testing.T) {
+	kkk, err := NewKnowledge(WithSource(test_events))
+	if err != nil {
+		t.Fatal(err)
+	}
 	s := NewState()
 	s.Add("ContadiniA", 1.0)
 	s.Add("LupiA", 1.0)
 	s.Add("CapreA", 1.0)
 	s.Add("CavoliA", 1.0)
 	s.Add("ContadiniB", 0.0)
-	e1 := NewEvent("Il contadino va sulla sponda B")
-	e1.addConditions([]string{"ContadiniA + LupiA + CapreA + CavoliA == 4",})
-	e1.addAssignments([]string{"ContadiniB = 1",})
+	e1, ok := kkk.GetEvent("Il contadino va sulla sponda B")
+	if !ok {
+		t.Fatalf("not found event")
+	}
 	outcome, output, err := e1.Run(*s)
 	if err != nil {
 		t.Fatal(err)
@@ -36,23 +45,21 @@ func TestEvents(t *testing.T) {
 	}
 }
 
-/*
-This test verifies that an event cannot happen if all variables it requires
-are defined into the state
-*/
+// This test verifies that an event fails if state misses some variables
 func TestUnknownEvents(t *testing.T) {
-	init := NewState()
-	init.Add("ContadiniA", 1.0)
-	init.Add("ContadiniB", 0.0)
-	init.Add("LupiA", 1.0)
-	init.Add("LupiB", 0.0)
-	init.Add("CapreA", 1.0)
-	init.Add("CapreB", 0.0)
-	e1 := NewEvent("1")
-	e1.addConditions([]string{"LupiA + CapreA + CavoliA + ContadiniA == 4",})
-	e1.addAssignments([]string{"ContadiniB = 1",})
-	data := init.Clone()
-	outcome, _, err := e1.Run(*data)
+	kkk, err := NewKnowledge(WithSource(test_events))
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := NewState()
+	s.Add("ContadiniA", 1.0)
+	s.Add("LupiA", 1.0)
+	s.Add("CapreA", 1.0)
+	e1, ok := kkk.GetEvent("Il contadino va sulla sponda B")
+	if !ok {
+		t.Fatalf("not found event")
+	}
+	outcome, _, err := e1.Run(*s)
 	if err != nil {
 		fmt.Println("Error ", err)
 		fmt.Println("Outcome ", outcome)

@@ -11,8 +11,8 @@ var test1 string
 func TestGetAvailableSize(t *testing.T) {
 	source := "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet"
 	tests := map[int]int{
-		0: 62,
-		5: 57,
+		0:  62,
+		5:  57,
 		62: 0,
 	}
 	s, err := NewScanner(source)
@@ -30,9 +30,9 @@ func TestGetAvailableSize(t *testing.T) {
 func TestIsNextToken(t *testing.T) {
 	source := ")---if---then---}---event("
 	tests := map[int]string{
-		0: close_bracket_token,
-		4: if_token,
-		9: then_token,
+		0:  close_bracket_token,
+		4:  if_token,
+		9:  then_token,
 		16: close_block_token,
 		20: open_event_token,
 	}
@@ -76,41 +76,41 @@ func TestGetText(t *testing.T) {
 
 func TestScanner(t *testing.T) {
 	test_tokens := []Token{
-		{ id: open_comment_token,},
-		{ id: text_token, },
-		{ id: close_comment_token,},
-		{ id: open_event_token,	},
-		{ id: text_token, },
-		{ id: close_bracket_token, },
-		{ id: open_block_token,},
-		{ id: if_token,	},
-		{ id: open_block_token,	},
-		{ id: quote_token, }, { id: text_token, }, { id: quote_token, },
-		{ id: quote_token, }, { id: text_token, }, { id: quote_token, },
-		{ id: close_block_token, },
-		{ id: then_token, },
-		{ id: open_block_token,	},
-		{ id: quote_token, }, { id: text_token, }, { id: quote_token, },
-		{ id: close_block_token, },
-		{ id: effect_token, },
-		{ id: open_block_token,	},
-		{ id: open_bracket_token,	},
-		{ id: quote_token, }, { id: text_token, }, { id: quote_token, }, { id: comma_token, }, { id: text_token, },
-		{ id: close_bracket_token,	},
-		{ id: close_block_token, },
-		{ id: close_block_token,},
+		{id: open_comment_token},
+		{id: text_token},
+		{id: close_comment_token},
+		{id: open_event_token},
+		{id: text_token},
+		{id: close_bracket_token},
+		{id: open_block_token},
+		{id: if_token},
+		{id: open_block_token},
+		{id: quote_token}, {id: text_token}, {id: quote_token},
+		{id: quote_token}, {id: text_token}, {id: quote_token},
+		{id: close_block_token},
+		{id: then_token},
+		{id: open_block_token},
+		{id: quote_token}, {id: text_token}, {id: quote_token},
+		{id: close_block_token},
+		{id: effect_token},
+		{id: open_block_token},
+		{id: open_bracket_token},
+		{id: quote_token}, {id: text_token}, {id: quote_token}, {id: comma_token}, {id: text_token},
+		{id: close_bracket_token},
+		{id: close_block_token},
+		{id: close_block_token},
 	}
 	s, err := NewScanner(test1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	lexer, err := s.run()
+	lexer, err := s.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
 	tt := lexer.tokens
 	if len(tt) != len(test_tokens) {
-			t.Errorf("expected %v tokens not %v", len(test_tokens), len(tt))
+		t.Errorf("expected %v tokens not %v", len(test_tokens), len(tt))
 	}
 	for j := range test_tokens {
 		if j < len(tt) {
@@ -131,7 +131,7 @@ func TestScannerWithBiggerCode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	lexer, err := s.run()
+	lexer, err := s.Run()
 	if err != nil {
 		lexer.debug(false)
 		t.Fatal(err)

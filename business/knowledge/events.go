@@ -76,23 +76,6 @@ func NewEvent(id string, opts ...EventOption) *Event {
 	return e
 }
 
-// solveEffects resolves the event's effects starting from the names of the effects
-func (event *Event) solveEffects(kkk []*Event) error {
-	for _, effect := range event.effects {
-		ok := false
-		for _, target := range kkk {
-			if target.ID == effect.Name {
-				effect.Effect = target
-				ok = true
-			}
-		}
-		if !ok {
-			return fmt.Errorf("effect %v of event %v does not exist", effect.Name, event.ID)
-		}
-	}
-	return nil
-}
-
 func (event *Event) AddCondition(cc *govaluate.EvaluableExpression) {
 	event.conditions = append(event.conditions, cc)
 }

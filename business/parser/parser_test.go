@@ -24,24 +24,24 @@ func TestParser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	lexer, err := scanner.run()
+	lexer, err := scanner.Run()
 	if err != nil {
 		t.Fatal(err)
 	}
-	parser, err := NewParser(lexer)
+	p, err := NewParser(lexer)
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = parser.Parse()
+	code, err := p.Parse()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(parser.code) != len(events) {
-		t.Fatalf("expected %v events not %v", len(events), len(parser.code))
+	if len(code) != len(events) {
+		t.Fatalf("expected %v events not %v", len(events), len(code))
 	}
 	for i := range events {
-		if parser.code[i].name != events[i] {
-			t.Errorf("expected [%s] not [%s]", events[i], parser.code[i].name)
+		if code[i].name != events[i] {
+			t.Errorf("expected [%s] not [%s]", events[i], code[i].name)
 		}
 	}
 }

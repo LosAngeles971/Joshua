@@ -200,7 +200,7 @@ func (s *Scanner) getText(stopTokens []string) (string, error) {
 }
 
 // run scans the source code and returns a Lexer object.
-func (s *Scanner) run() (*Lexer, error) {
+func (s *Scanner) Run() (*Lexer, error) {
 	lexer := &Lexer{
 		index:  0,
 		tokens: []Token{},
