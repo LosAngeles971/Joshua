@@ -1,7 +1,6 @@
 package knowledge
 
 import (
-	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -15,22 +14,18 @@ func TestLogicReasoning(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	outcome, solution, err := engine.IsItGoingToHappen(*s, "They are all on the est bank of the river")
-	if err != nil {
+	solution := engine.IsItGoingToHappen(*s, "They are all on the est bank of the river")
+	if solution.Err != nil {
 		t.Fatal(err)
 	}
-	if solution.Size() < 1 {
+	if solution.Chain.Size() < 1 {
 		t.Fatal("expected a queue larger than 0")
 	}
-	if outcome != EFFECT_OUTCOME_TRUE {
-		t.Fatalf("exepected outcome [%v] not [%v]", EFFECT_OUTCOME_TRUE, outcome)
+	if solution.Outcome != EFFECT_OUTCOME_TRUE {
+		t.Fatalf("exepected outcome [%v] not [%v]", EFFECT_OUTCOME_TRUE, solution.Outcome)
 	}
-	PrintSummary(outcome, solution)
-	y, err := solution.Serialize()
-	if err != nil {
-		t.Fatal(err)
-	}
-	log.Print(y)
+	solution.PrintChain()
+	solution.PrintSummary()
 }
 
 

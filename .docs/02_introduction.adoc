@@ -1,0 +1,230 @@
+<<<
+== The farmer, the wolf, the goat and the cabbage
+
+[quote, https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem]
+____
+Once upon a time a farmer went to a market and purchased a wolf, a goat, and a cabbage. On his way home, the farmer came to the bank of a river and rented a boat. But crossing the river by boat, the farmer could carry only himself and a single one of his purchases: the wolf, the goat, or the cabbage.
+If left unattended together, the wolf would eat the goat, or the goat would eat the cabbage.
+The farmer's challenge was to carry himself and his purchases to the far bank of the river, leaving each purchase intact. How did he do it?
+____
+
+Joshua sees a problem like the combination of: 
+. an initial _state_
+. the _final event_, that is the event you would like to make happen.
+. a _knowledge_
+
+Finding a solution for a problem means checking if there is **at least one chain of events that eventually cause the final event**.
+
+An event is something like a phisycal phenomena or an action, and formally is defined by the following elements:
+. a unique name
+. a list of conditions
+. an _optional_ list of assignments
+. an _optional_ list of effects
+
+Each _condition_ is a mathematical expression which returns a boolean value; thus if all conditions are true, then the event occurs and the consequences are in the form of _assignments_ and _effects_.
+
+Each _assignment_ is a mathematical expression to assign a value to a _variable_. 
+
+Each _effect_ is the representation of a **cause-effect relationship** between events, formally it is a **weighted" link to another event and the _weight_ characterizes the nature of the relationship:
+
+* 0.0 means the cause **never** triggers the effect
+* 1.0 means the cause **always** triggers the effect
+* any value into (0,1) means that the cause _may_ trigger the effect
+
+Thus the weight indicates how much the effect is likely to occur once the cause occurred. For example the event "The farmer brings the cabbage on the bank B of the river" _may_ cause the effect "The farmer, the wolf, the goat and the cabbage are on the bank B of the river", but it not sure, so the weight of such relationship must be into (0,1).
+
+The _state_ plays a central role in the occurrence of events, since it includes the information which determine if an event may happen or not; such information are in the forms of **variables** and indeed:
+
+* event's conditions refers to the variables of the **current state**
+* event's assignments updates the variables of the **curren state** to determine the **new state**
+
+Trying to solve the the farmer's problem_ requires to define:
+
+. a state and its initial value
+. a final event
+. a knowledge
+
+About defining the state, a possible approach sees 4 variables to determine, over the time, if the involced characters (farmer, woklf, goat and cabbage) are on est (1) or ovest (0) bank of the river.
+
+The initial state is all characters on the ovest bank of the river:
+
+* Farmer_location   = 1
+* Wolf_location     = 1
+* Goat_location     = 1
+* Cabbage_location  = 1
+
+The final evet is "They are all on the est bank of the river".
+
+Finally the knowledge is simply a list of events, and it can be designed by means of Joshua's language using a approach like the following:
+
+. identification of the final event (aka the problem's solution)
+. identification of the chains of events which eventually cause the final event
+. desisgn the cause-effect relationships between all events
+. design conditions and assignments for each event
+
+Below a knowledge to solve the _farmer's problem_.
+
+[source]
+----
+/*
+The farmer, the wolf, the goat and the cabbage
+*/
+
+  event(They are all on the est bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "Wolf_location == 1"
+	  "Goat_location == 1"
+	  "Cabbage_location == 1"
+	}
+	then {
+	}
+    effects {
+    }
+  }
+  
+  event(The farmer brings the cabbage to the est bank of the river) {
+	if {
+	  "Farmer_location == 0"
+	  "Cabbage_location == 0"
+	  "Wolf_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Cabbage_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the cabbage to the ovest bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "Cabbage_location == 1"
+	  "Wolf_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Cabbage_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer brings the goat to the est bank of the river) {
+	if {
+		"Farmer_location == 0"
+		"Goat_location == 0"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Goat_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the goat to the ovest bank of the river) {
+	if {
+		"Farmer_location == 1"
+		"Goat_location == 1"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Goat_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer brings the wolf to the est bank of the river) {
+	if {
+		"Farmer_location == 0"
+		"Wolf_location == 0"
+		"Cabbage_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Wolf_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the wolf to the ovest bank of the river) {
+	if {
+		"Farmer_location == 1"
+		"Goat_location == 1"
+		"Cabbage_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Wolf_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer goes to the est bank of the river) {
+	if {
+	  "Farmer_location == 0"
+	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
+	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
+	}
+	then {
+	  "Farmer_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.3)
+    }
+  }
+  
+  event(The farmer comes back to the ovest bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
+	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
+	}
+	then {
+	  "Farmer_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.3)
+    }
+  }
+----
+
+All identified events, but not the solution, are farmer's actions and all of them may cause the solution. Why?
+The farmer requires a sequence of actions to solve its problem, and we cannot design that sequence, since it would mean to solve the problem at design time. Instead the proposed knowledge is a sort of **brutal force attack** to the problem, as a consequence of having many events that may cause the solution.
+
+Joshua requires 24 cycles to solve the problem. Each cycle is an attempt to check if the final event occurs, and running a cycle is possible **only if the previous cycle changed the state**.
+
+[source]
+----
+        Outcome|   true|
+         Cycles|     24|
+   Queue's size|     31|
+----
+
+Looking at the full details of each cycle (please see the appendic) is recognizable the brutal force attack, due to the many foolish attempts.
+Below the clean concatenation of events to the final event.
+
+[source]
+----
+   Cycle|                                                          Cause|                                      Effect|               Outcome|
+       1|        The farmer brings the goat to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+       6|           The farmer comes back to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+       7|     The farmer brings the cabbage to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      13|   The farmer brings the cabbage to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+      14|      The farmer brings the goat to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+      16|        The farmer brings the goat to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      17|        The farmer brings the wolf to the est bank of the river|   They are all on the est bank of the river|   effect not happened|
+      22|           The farmer comes back to the ovest bank of the river|   They are all on the est bank of the river|   effect not happened|
+      24|        The farmer brings the goat to the est bank of the river|   They are all on the est bank of the river|                  true|
+----
