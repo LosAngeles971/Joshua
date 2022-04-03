@@ -3,8 +3,6 @@ package parser
 import (
 	_ "embed"
 	"fmt"
-	"it/losangeles971/joshua/business/knowledge"
-	"it/losangeles971/joshua/business/math"
 
 	"gopkg.in/yaml.v3"
 )
@@ -15,7 +13,7 @@ var joshua string
 type Parser struct {
 	Lib   []FSM `yaml:"automata"`
 	lexer *Lexer
-	code  []*knowledge.Event
+	code  []EventCode
 }
 
 func NewParser(l *Lexer) (*Parser, error) {
@@ -24,40 +22,29 @@ func NewParser(l *Lexer) (*Parser, error) {
 	}
 	fsm := &Parser{
 		lexer: l,
-		code: []*knowledge.Event{},
+		code:  []EventCode{},
 	}
 	err := yaml.Unmarshal([]byte(joshua), fsm)
 	return fsm, err
 }
 
 func (p *Parser) setCodeName(name string) {
-	p.code = append(p.code, knowledge.NewEvent(name))
+	p.code = append(p.code, EventCode{name: name})
 }
 
-func (p *Parser) addIf(expr string) error {
+func (p *Parser) addIf(expr string) {
 	e := p.code[len(p.code)-1]
-	cc, err := math.NewExpression(expr)
-	if err != nil {
-		return err
-	}
-	e.AddCondition(cc)
-	return nil
+	e.conditions = append(e.conditions, expr)
 }
 
-func (p *Parser) addThen(expr string) error {
+func (p *Parser) addThen(expr string) {
 	e := p.code[len(p.code)-1]
-	aa, err := knowledge.NewAssignment(expr)
-	if err != nil {
-		return err
-	}
-	e.AddAssigment(aa)
-	return nil
+	e.assignments = append(e.assignments, expr)
 }
 
-func (p *Parser) addEffect(expr string) error {
+func (p *Parser) addEffect(expr string) {
 	e := p.code[len(p.code)-1]
-	e.AddEffect(knowledge.NewRelationship(expr))
-	return nil
+	e.effects = append(e.effects, expr)
 }
 
 func (p *Parser) getFSM(id string) (FSM, error) {
@@ -132,24 +119,15 @@ func (p *Parser) process(fsmID string) error {
 				}
 			case "ifexpression":
 				if token.id == text_token {
-					err := p.addIf(token.value)
-					if err != nil {
-						return err
-					}
+					p.addIf(token.value)
 				}
 			case "thenexpression":
 				if token.id == text_token {
-					err := p.addThen(token.value)
-					if err != nil {
-						return err
-					}
+					p.addThen(token.value)
 				}
 			case "thenevent":
 				if token.id == text_token {
-					err := p.addEffect(token.value)
-					if err != nil {
-						return err
-					}
+					p.addEffect(token.value)
 				}
 			}
 		}

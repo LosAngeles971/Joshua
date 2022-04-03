@@ -90,6 +90,13 @@ func TestScanner(t *testing.T) {
 		{ id: close_block_token, },
 		{ id: then_token, },
 		{ id: open_block_token,	},
+		{ id: quote_token, }, { id: text_token, }, { id: quote_token, },
+		{ id: close_block_token, },
+		{ id: effect_token, },
+		{ id: open_block_token,	},
+		{ id: open_bracket_token,	},
+		{ id: quote_token, }, { id: text_token, }, { id: quote_token, }, { id: comma_token, }, { id: text_token, },
+		{ id: close_bracket_token,	},
 		{ id: close_block_token, },
 		{ id: close_block_token,},
 	}
@@ -116,5 +123,23 @@ func TestScanner(t *testing.T) {
 				t.Logf("[%v] expected [%v] token found [%v]", j, tt[j].id, test_tokens[j].id)
 			}
 		}
+	}
+}
+
+func TestScannerWithBiggerCode(t *testing.T) {
+	s, err := NewScanner(test2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lexer, err := s.run()
+	if err != nil {
+		lexer.debug(false)
+		t.Fatal(err)
+	}
+	lexer.debug(true)
+	tt := lexer.tokens
+	wanted := 299
+	if len(tt) != wanted {
+		t.Errorf("expected %v tokens not %v", wanted, len(tt))
 	}
 }

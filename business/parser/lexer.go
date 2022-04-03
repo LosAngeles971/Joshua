@@ -1,6 +1,10 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+
+	log "github.com/sirupsen/logrus"
+)
 
 // Lexer is the result of a source's scanning
 // It is a ordinated list of tokens and it provides functions for browsing
@@ -38,4 +42,14 @@ func (l *Lexer) getToken() (Token, error) {
 	}
 	l.index++
 	return t, nil
+}
+
+func (l *Lexer) debug(raw bool) {
+	for i := range l.tokens {
+		if raw {
+			fmt.Printf("%v\n", l.tokens[i].id)
+		} else {
+			log.Infof("token [%v] location [%v] value [%s]", l.tokens[i].id, l.tokens[i].loc, l.tokens[i].value)
+		}
+	}
 }

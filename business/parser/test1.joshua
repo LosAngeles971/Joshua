@@ -8,5 +8,9 @@ event(They are all on the est bank of the river) {
 	  "Wolf_location == 1"
 	}
 	then {
+	 "Wolf_location = 1"	
+	}
+	effects {
+		("hello",1.0)
 	}
 }

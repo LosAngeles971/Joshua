@@ -15,12 +15,14 @@ const (
 	then_token          = "then"    // keyword
 	effect_token        = "effects" // keyword
 	open_event_token    = "event("  // keyword
+	open_bracket_token  = "("       // keyword
 	close_bracket_token = ")"       // keyword
 	open_block_token    = "{"       // keyword
 	close_block_token   = "}"       // keyword
 	open_comment_token  = "/*"      // keyword
 	close_comment_token = "*/"      // keyword
 	quote_token         = "\""      // keyword
+	comma_token         = ","       // keyword
 )
 
 // List of all recognized keywords
@@ -29,12 +31,14 @@ var keywords = []string{
 	then_token,
 	effect_token,
 	open_event_token,
+	open_bracket_token,
 	close_bracket_token,
 	open_block_token,
 	close_block_token,
 	open_comment_token,
 	close_comment_token,
 	quote_token,
+	comma_token,
 }
 
 // List of chars which can be discarded
@@ -48,6 +52,7 @@ var eof = rune(0)
 var textStopTokens = map[string][]string{
 	open_comment_token: {close_comment_token},
 	open_event_token:   {close_bracket_token},
+	comma_token:        {close_bracket_token},
 	quote_token:        {quote_token},
 }
 
@@ -71,6 +76,7 @@ var trimAfterToken = map[string]bool{
 type Token struct {
 	id    string
 	value string
+	loc   int // location of the token into the source code
 }
 
 // Scanner is a lexical scanner.
@@ -199,6 +205,7 @@ func (s *Scanner) run() (*Lexer, error) {
 		index:  0,
 		tokens: []Token{},
 	}
+	nextIsText := false
 	var previous Token
 	for {
 		if s.eof() {
@@ -214,39 +221,54 @@ func (s *Scanner) run() (*Lexer, error) {
 		}
 		changed := false
 		// keyword
-		for k := range keywords {
-			yes, err := s.isNextKeyword(keywords[k], false)
-			if err != nil {
-				return nil, err
-			}
-			if yes {
-				s.isNextKeyword(keywords[k], true)
-				lexer.tokens = append(lexer.tokens, Token{
-					id: keywords[k],
-				})
-				changed = true
+		if !nextIsText {
+			for k := range keywords {
+				yes, err := s.isNextKeyword(keywords[k], false)
+				if err != nil {
+					return lexer, err
+				}
+				if yes {
+					loc := s.index
+					s.isNextKeyword(keywords[k], true)
+					t := Token{
+						id: keywords[k],
+						loc: loc,
+					}
+					lexer.tokens = append(lexer.tokens, t)
+					changed = true
+					if t.id == quote_token {
+						if lexer.isEmpty() {
+							nextIsText = true
+						} else if previous.id != text_token {
+							nextIsText = true
+						}
+					}
+				}
 			}
 		}
 		if !changed {
-			// free text
+			// arbitrary text
 			var stopTokens []string
 			if lexer.isEmpty() {
-				stopTokens = []string{quote_token}
+				return lexer, fmt.Errorf("LOC [%v] source cannot start with arbitrary text", s.index)
 			} else {
 				var ok bool
 				stopTokens, ok = textStopTokens[previous.id]
 				if !ok {
-					return nil, fmt.Errorf("free text cannot be after token id [%v]", previous.id)
+					return lexer, fmt.Errorf("LOC [%v] arbitrary text cannot be after token id [%v]", s.index, previous.id)
 				}
 			}
+			loc := s.index
 			text, err := s.getText(stopTokens)
 			if err != nil {
-				return nil, err
+				return lexer, err
 			}
 			lexer.tokens = append(lexer.tokens, Token{
 				id:    text_token,
 				value: text,
+				loc: loc,
 			})
+			nextIsText = false
 		}
 	}
 }

@@ -100,8 +100,16 @@
     - id: effectexpression
       transitions:
         - action: token
+          token: "("
+        - action: token
           token: "\""
         - action: token
           token: "text"
         - action: token
           token: "\""
+        - action: token
+          token: ","
+        - action: token
+          token: "text"
+        - action: token
+          token: ")"
