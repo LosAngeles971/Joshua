@@ -4,15 +4,15 @@ LosAngeles971, 2021
 
 :sectnums!:
 
-include::docs/01_abstract.adoc[]
+include::{docs-root}/docs/01_abstract.adoc[]
 
 :sectnums:
 
-include::docs/02_introduction.adoc[]
+include::{docs-root}/docs/02_introduction.adoc[]
 
-include::docs/03_usage.adoc[]
+include::{docs-root}/docs/03_usage.adoc[]
 
-include::docs/04_appendix.adoc[]
+include::{docs-root}/docs/04_appendix.adoc[]
 
 :sectnums!:
 
