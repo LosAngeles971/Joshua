@@ -1,28 +1,68 @@
 == User guide
 
-Joshua is available for the following architectures:
 
-  
-* Windows amd64
-* Linux amd64
-* ARM amd64
-* Mac OS/X
+=== How to write a knowledge
 
-The software is available for download at the link:
+TBD
 
-?????
+=== How to use the Joshua API
 
-=== How to write a knowledge YAML file
+Here an example of using Joshua API to solve the problem of "the farmer, the wolf, the goat and the cabbage".
 
+[source, golang]
+----
+package main
 
+import (
+   "io/ioutil"
+	"it/losangeles971/joshua/business/knowledge"
+	"strings"
+)
 
+func main() {
+   thefarmer, err := ioutil.ReadFile("thefarmer.joshua")
+   if err != nil {
+		panic(err)
+	}
+   s := knowledge.NewState()
+	s.Add("Farmer_location", 0.0)
+	s.Add("Wolf_location", 0.0)
+	s.Add("Goat_location", 0.0)
+	s.Add("Cabbage_location", 0.0)
+	engine, err := knowledge.NewEngine(string(thefarmer), 100)
+	if err != nil {
+		panic(err)
+	}
+	solution := engine.IsItGoingToHappen(*s, "They are all on the est bank of the river")
+	if solution.Err != nil {
+		panic(err)
+	}
+	solution.PrintChain()
+	solution.PrintSummary()
+}
+----
 
-=== How to write a problem YAML file
+=== How to use the Joshua CLI
 
+The CLI is really simple and it provides an help to understand the meaning of the available flags.
 
+[source, shell]
+----
+$ ./joshua.exe --help
+joshua
 
-=== CLI usage
+Usage:
+  joshua [flags]
 
+Flags:
+  -d, --data string        initial state
+  -h, --help               help for joshua
+  -k, --knowledge string   knowledge file
+  -m, --max-cycles int     maximum number of cycles (default 100) (default 100)
+  -s, --success string     final event
+----
+
+Here an example to run Joshua over the problem of "the farmer, the wolf, the goat and the cabbage".
 
 [source, shell]
 ----

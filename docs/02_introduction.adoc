@@ -8,12 +8,7 @@ If left unattended together, the wolf would eat the goat, or the goat would eat 
 The farmer's challenge was to carry himself and his purchases to the far bank of the river, leaving each purchase intact. How did he do it?
 ____
 
-Joshua sees a problem like the combination of: 
-. an initial _state_
-. the _final event_, that is the event you would like to make happen.
-. a _knowledge_
-
-Finding a solution for a problem means checking if there is **at least one chain of events that eventually cause the final event**.
+From the perspective of Joshua, a problem combination of (i) the _knowledge_, (ii) an initial _state_ and (iii) a _final event_, the latter is the event you would check the occurrence. Finding a solution for a problem means checking if there is **at least one chain of events that eventually cause the final event**.
 
 An event is something like a phisycal phenomena or an action, and formally is defined by the following elements:
 . a unique name

@@ -1,5 +1,9 @@
+<<<
+== Appendix
 
+=== The farmer, the wolf, the goat and the cabbage
 
+Below the full queue produced by Joshua to solve the problem of "the farmer, the wolf, the goat and the cabbage".
 [source,yaml]
 ----
 queue:
