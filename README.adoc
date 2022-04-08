@@ -256,7 +256,41 @@ Below the clean concatenation of events to the final event.
 
 === How to write a knowledge
 
-TBD
+A knowledge is a list of events. Joshua provides a simple programming language of Joshua to write a knowledge, where an event is defined by  following structure:
+
+[source, bash]
+----
+event(<arbitrary name>) {
+	if {
+	  "<mathematical equality>"
+	}
+	then {
+    "<mathematical assignement>"
+	}
+  effects {
+    ("<event name>", <weight>)
+  }
+}
+----
+
+For example:
+
+[source, bash]
+----
+event(The farmer comes back to the ovest bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
+	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
+	}
+	then {
+	  "Farmer_location = 0"
+	}
+  effects {
+        ("They are all on the est bank of the river", 0.3)
+  }
+}
+----
 
 === How to use the Joshua API
 
@@ -297,7 +331,7 @@ func main() {
 
 === How to use the Joshua CLI
 
-The CLI is really simple and it provides an help to understand the meaning of the available flags.
+The CLI is really simple and includes an help:
 
 [source, shell]
 ----
