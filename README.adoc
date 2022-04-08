@@ -84,145 +84,7 @@ Finally the knowledge is simply a list of events, and it can be designed by mean
 . desisgn the cause-effect relationships between all events
 . design conditions and assignments for each event
 
-Below a knowledge to solve the _farmer's problem_.
-
-[source]
-----
-/*
-The farmer, the wolf, the goat and the cabbage
-*/
-
-  event(They are all on the est bank of the river) {
-	if {
-	  "Farmer_location == 1"
-	  "Wolf_location == 1"
-	  "Goat_location == 1"
-	  "Cabbage_location == 1"
-	}
-	then {
-	}
-    effects {
-    }
-  }
-  
-  event(The farmer brings the cabbage to the est bank of the river) {
-	if {
-	  "Farmer_location == 0"
-	  "Cabbage_location == 0"
-	  "Wolf_location != Goat_location"
-	}
-	then {
-	  "Farmer_location = 1"
-	  "Cabbage_location = 1"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.5)
-    }
-  }
-  
-  event(The farmer brings the cabbage to the ovest bank of the river) {
-	if {
-	  "Farmer_location == 1"
-	  "Cabbage_location == 1"
-	  "Wolf_location != Goat_location"
-	}
-	then {
-	  "Farmer_location = 0"
-	  "Cabbage_location = 0"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.1)
-    }
-  }
-  
-  event(The farmer brings the goat to the est bank of the river) {
-	if {
-		"Farmer_location == 0"
-		"Goat_location == 0"
-	}
-	then {
-	  "Farmer_location = 1"
-	  "Goat_location = 1"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.5)
-    }
-  }
-  
-  event(The farmer brings the goat to the ovest bank of the river) {
-	if {
-		"Farmer_location == 1"
-		"Goat_location == 1"
-	}
-	then {
-	  "Farmer_location = 0"
-	  "Goat_location = 0"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.1)
-    }
-  }
-  
-  event(The farmer brings the wolf to the est bank of the river) {
-	if {
-		"Farmer_location == 0"
-		"Wolf_location == 0"
-		"Cabbage_location != Goat_location"
-	}
-	then {
-	  "Farmer_location = 1"
-	  "Wolf_location = 1"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.5)
-    }
-  }
-  
-  event(The farmer brings the wolf to the ovest bank of the river) {
-	if {
-		"Farmer_location == 1"
-		"Goat_location == 1"
-		"Cabbage_location != Goat_location"
-	}
-	then {
-	  "Farmer_location = 0"
-	  "Wolf_location = 0"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.1)
-    }
-  }
-  
-  event(The farmer goes to the est bank of the river) {
-	if {
-	  "Farmer_location == 0"
-	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
-	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
-	}
-	then {
-	  "Farmer_location = 1"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.3)
-    }
-  }
-  
-  event(The farmer comes back to the ovest bank of the river) {
-	if {
-	  "Farmer_location == 1"
-	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
-	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
-	}
-	then {
-	  "Farmer_location = 0"
-	}
-    effects {
-        ("They are all on the est bank of the river", 0.3)
-    }
-  }
-----
-
-All identified events, but not the solution, are farmer's actions and all of them may cause the solution. Why?
+You can see the knowledge to solve the _farmer's problem_ into the appendix and noticing that all events, but not the solution, are farmer's actions and all of them may cause the solution. Why?
 The farmer requires a sequence of actions to solve its problem, and we cannot design that sequence, since it would mean to solve the problem at design time. Instead the proposed knowledge is a sort of **brutal force attack** to the problem, as a consequence of having many events that may cause the solution.
 
 Joshua requires 24 cycles to solve the problem. Each cycle is an attempt to check if the final event occurs, and running a cycle is possible **only if the previous cycle changed the state**.
@@ -374,6 +236,144 @@ $ ./joshua.exe -d .resources/thefarmer.yml -k .resources/thefarmer.joshua -s "Th
 == Appendix
 
 === The farmer, the wolf, the goat and the cabbage
+
+Following a knowledge to solve the _farmer's problem_.
+
+[source, bash]
+----
+/*
+The farmer, the wolf, the goat and the cabbage
+*/
+
+  event(They are all on the est bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "Wolf_location == 1"
+	  "Goat_location == 1"
+	  "Cabbage_location == 1"
+	}
+	then {
+	}
+    effects {
+    }
+  }
+  
+  event(The farmer brings the cabbage to the est bank of the river) {
+	if {
+	  "Farmer_location == 0"
+	  "Cabbage_location == 0"
+	  "Wolf_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Cabbage_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the cabbage to the ovest bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "Cabbage_location == 1"
+	  "Wolf_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Cabbage_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer brings the goat to the est bank of the river) {
+	if {
+		"Farmer_location == 0"
+		"Goat_location == 0"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Goat_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the goat to the ovest bank of the river) {
+	if {
+		"Farmer_location == 1"
+		"Goat_location == 1"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Goat_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer brings the wolf to the est bank of the river) {
+	if {
+		"Farmer_location == 0"
+		"Wolf_location == 0"
+		"Cabbage_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 1"
+	  "Wolf_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.5)
+    }
+  }
+  
+  event(The farmer brings the wolf to the ovest bank of the river) {
+	if {
+		"Farmer_location == 1"
+		"Goat_location == 1"
+		"Cabbage_location != Goat_location"
+	}
+	then {
+	  "Farmer_location = 0"
+	  "Wolf_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.1)
+    }
+  }
+  
+  event(The farmer goes to the est bank of the river) {
+	if {
+	  "Farmer_location == 0"
+	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
+	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
+	}
+	then {
+	  "Farmer_location = 1"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.3)
+    }
+  }
+  
+  event(The farmer comes back to the ovest bank of the river) {
+	if {
+	  "Farmer_location == 1"
+	  "(Wolf_location == 1 && Cabbage_location == 1 && Goat_location == 0) ||
+	  (Wolf_location == 0 && Cabbage_location == 0 && Goat_location == 1)"
+	}
+	then {
+	  "Farmer_location = 0"
+	}
+    effects {
+        ("They are all on the est bank of the river", 0.3)
+    }
+  }
+----
 
 Below the full queue produced by Joshua to solve the problem of "the farmer, the wolf, the goat and the cabbage".
 [source,yaml]
