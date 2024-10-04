@@ -3,6 +3,8 @@ package core
 import (
 	"fmt"
 	"reflect"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Data struct {
@@ -18,7 +20,7 @@ func newData() *Data {
 func (d *Data) Clone() *Data {
 	c := newData()
 	for key, value := range d.Data {
-		switch value.(type) {
+		switch t := value.(type) {
 		case int:
 			c.Data[key] = d.Data[key].(int)
 		case int64:
@@ -29,6 +31,10 @@ func (d *Data) Clone() *Data {
 			c.Data[key] = d.Data[key].(string)
 		case bool:
 			c.Data[key] = d.Data[key].(bool)
+		case []string:
+			c.Data[key] = d.Data[key].([]string)
+		default:
+			logrus.Warningf("unsupported data type ( %v )", t)
 		}
 	}
 	return c
@@ -36,7 +42,7 @@ func (d *Data) Clone() *Data {
 
 func (d *Data) SetData(key string, value interface{}) error {
 	switch t := value.(type) {
-	case int, int64, float64, string, bool:
+	case int, int64, float64, string, bool, []string:
 		d.Data[key] = value
 	default:
 		return fmt.Errorf("data not supported for key/value store ( %v  )", t)
@@ -99,6 +105,14 @@ func (d *Data) GetBool(key string) (bool, bool) {
 		return v.(bool), true
 	} else {
 		return false, false
+	}
+}
+
+func (d *Data) GetStringArray(key string) ([]string, bool) {
+	if v, ok := d.GetData(key); ok {
+		return v.([]string), true
+	} else {
+		return nil, false
 	}
 }
 

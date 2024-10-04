@@ -2,6 +2,7 @@ package boltstore
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BoltStore is a persistent iplementation of a store interface, using BoltDB as back-end.
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -14,8 +15,8 @@ import (
 )
 
 const (
-	nodes_bucket     = "nodes"
-	relations_bucket = "relations"
+	nodes_bucket     = "nodes"     // bucket dedicated to nodes
+	relations_bucket = "relations" // bucket dedicated to relations
 )
 
 type BoltStore struct {
@@ -32,6 +33,7 @@ func NewBoltStore(path string) *BoltStore {
 	}
 }
 
+// Open: it opens the database and creates the two buckets (nodes and relations) if they do not exist.
 func (s *BoltStore) Open() error {
 	if s.db == nil {
 		var err error
@@ -57,10 +59,12 @@ func (s *BoltStore) Open() error {
 	return nil
 }
 
+// Close: it closes the database.
 func (s *BoltStore) Close() error {
 	return s.db.Close()
 }
 
+// StoreNode: it stores or updates a node into the store.
 func (s *BoltStore) StoreNode(n core.Node) error {
 	dd, err := core.Encode(n)
 	if err != nil {

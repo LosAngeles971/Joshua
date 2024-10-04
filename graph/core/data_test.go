@@ -13,9 +13,11 @@ func TestData(t *testing.T) {
 		"f": float64(6.3),
 		"s": "test",
 		"b": false,
+		"a": []string{"1", "2",},
 	}
 	d1 := newData()
-	d1.SetDatas(test_data)
+	err := d1.SetDatas(test_data)
+	require.Nil(t, err)
 	for k, v := range test_data {
 		vv, ok := d1.GetData(k)
 		require.True(t, ok)
